@@ -31,7 +31,7 @@ Extended 1.3 aka Legacy
 - Prison de la v5 (adapté à la base)
 - Custom véhicule (RageUI)
 
-***- Merci à Enos qui ma ouvert les portes pour le dev.***
-***- Yavz pour m'avoir soutenue pendant pleins de moment et de disponibilzer un hebergement.***
-***- Rayan et Genius pour m'aider à plusieurs occasions (je vous aime)***
-***- Et merci à Agora-Jyben, Kaito, Pablo et pleins d'autre que je me r'apelle plus xD***
+*** - Merci à Enos qui ma ouvert les portes pour le dev.***
+*** - Yavz pour m'avoir soutenue pendant pleins de moment et de disponibilzer un hebergement.***
+*** - Rayan et Genius pour m'aider à plusieurs occasions (je vous aime)***
+*** - Et merci à Agora-Jyben, Kaito, Pablo et pleins d'autre que je me r'apelle plus xD***
