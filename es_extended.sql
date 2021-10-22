@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22-Out-2021 às 02:40
+-- Tempo de geração: 22-Out-2021 às 13:18
 -- Versão do servidor: 10.4.18-MariaDB
 -- versão do PHP: 7.3.27
 
@@ -1127,13 +1127,6 @@ CREATE TABLE `user_accessories` (
   `index` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
---
--- Extraindo dados da tabela `user_accessories`
---
-
-INSERT INTO `user_accessories` (`id`, `identifier`, `mask`, `label`, `type`, `index`) VALUES
-(246, 'af6a3d4bf071f1e095fa0c6193af5d1d3cebb1d4', '{\"mask_1\":1,\"mask_2\":0}', 'Masque Cochon', 'Masque', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -1681,7 +1674,7 @@ ALTER TABLE `vehicle_categories`
 -- AUTO_INCREMENT de tabela `addon_account_data`
 --
 ALTER TABLE `addon_account_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT de tabela `addon_inventory_items`
