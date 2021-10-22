@@ -30,7 +30,7 @@ Extended 1.3 aka Legacy
 - F5 (Krz_personalmenu)
 - Prison de la v5 (adapté à la base)
 - Custom véhicule (RageUI)
-
+[^1]:
 [^1]:Merci à Enos qui ma ouvert les portes pour le dev.
 - Yavz pour m'avoir soutenue pendant pleins de moment et de disponibilzer un hebergement.
 - Rayan et Genius pour m'aider à plusieurs occasions (je vous aime)
