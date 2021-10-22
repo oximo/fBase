@@ -10,11 +10,11 @@ Extended 1.3 aka Legacy
 
 **-> fCore (RageUI)**
 >18 Jobs
->#4 Gang
--> 2 Org avec craft
--> Menu Admin
--> Ammu, supérette, location, garage, fouille, drogues, menu touche, vêtement, bank et pôle emploi
--> Catalogue voiture + moto
+>4 Gang
+>2 Org avec craft
+>Menu Admin
+>Ammu, supérette, location, garage, fouille, drogues, menu touche, vêtement, bank et pôle emploi
+>Catalogue voiture + moto
 ---------------------
 - Braquage
 -> Supérette
