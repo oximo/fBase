@@ -124,6 +124,9 @@ Citizen.CreateThread(function()
 
             RageUI.Button('Demander la permission de sortir', nil, { RightLabel = "→→→" }, true, {
             },subMenu);
+
+            RageUI.Separator("Tickets requis: ~r~150")
+            
             end, function()
         end)
         RageUI.IsVisible(ctMenu, function()
