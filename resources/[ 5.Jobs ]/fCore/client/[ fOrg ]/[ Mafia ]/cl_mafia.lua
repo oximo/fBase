@@ -438,6 +438,18 @@ function MenuCraftmafia()
                                 RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
                                 local item = Mafia.craft[8].weapon
                                 TriggerServerEvent('mafiacraft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbpoudre), tonumber(choixnbruban))
+                            elseif tonumber(choixnbmet) == Mafia.craft[9].metaux and tonumber(choixnbmeche) == Mafia.craft[9].meche and tonumber(choixnbpoudre) == Mafia.craft[9].poudre and tonumber(choixnbruban) == Mafia.craft[9].ruban then
+                                RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
+                                local item = Mafia.craft[9].weapon
+                                TriggerServerEvent('cartelcraft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbpoudre), tonumber(choixnbruban))
+                            elseif tonumber(choixnbmet) == Mafia.craft[10].metaux and tonumber(choixnbmeche) == Mafia.craft[10].meche and tonumber(choixnbpoudre) == Mafia.craft[10].poudre and tonumber(choixnbruban) == Mafia.craft[10].ruban then
+                                RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
+                                local item = Mafia.craft[10].weapon
+                                TriggerServerEvent('cartelcraft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbpoudre), tonumber(choixnbruban))
+                            elseif tonumber(choixnbmet) == Mafia.craft[11].metaux and tonumber(choixnbmeche) == Mafia.craft[11].meche and tonumber(choixnbpoudre) == Mafia.craft[11].poudre and tonumber(choixnbruban) == Mafia.craft[11].ruban then
+                                RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
+                                local item = Mafia.craft[11].weapon
+                                TriggerServerEvent('cartelcraft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbpoudre), tonumber(choixnbruban))
                             else
                                 RageUI.Popup({message = "~r~Craft non réussi, vous avez perdu tout les matériaux utilisé!"})
                                 TriggerServerEvent('mafia_craft:nonvalider', tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbpoudre), tonumber(choixnbruban))
