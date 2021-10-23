@@ -2499,7 +2499,9 @@ Cartel.craft = {
 	{name = "Ordinateur portable", weapon = "laptop", metaux = 100, poudre = 0, meche = 0, ruban = 20},
 	{name = "Usb hack", weapon = "hack_usb", metaux = 75, poudre = 0, meche = 0, ruban = 2},
 	{name = "Clé 1", weapon = "key1", metaux = 8, poudre = 0, meche = 0, ruban = 1},
-	{name = "Clé 2", weapon = "key2", metaux = 16, poudre = 0, meche = 0, ruban = 2}
+	{name = "Clé 2", weapon = "key2", metaux = 16, poudre = 0, meche = 0, ruban = 2},
+	{name = "Grenade fumigène", weapon = "bzgas", metaux = 1, poudre = 1, meche = 1, ruban = 1},
+	{name = "Recharge grenade fumigène", weapon = "gzgas_ammo", metaux = 0, poudre = 5, meche = 0, ruban = 0}
 }
 
 Gcartelvoiture = {
@@ -2558,7 +2560,9 @@ Mafia.craft = {
 	{name = "Ordinateur portable", weapon = "laptop", metaux = 100, poudre = 0, meche = 0, ruban = 20},
 	{name = "Usb hack", weapon = "hack_usb", metaux = 75, poudre = 0, meche = 0, ruban = 2},
 	{name = "Clé 1", weapon = "key1", metaux = 8, poudre = 0, meche = 0, ruban = 1},
-	{name = "Clé 2", weapon = "key2", metaux = 16, poudre = 0, meche = 0, ruban = 2}
+	{name = "Clé 2", weapon = "key2", metaux = 16, poudre = 0, meche = 0, ruban = 2},
+	{name = "Grenade fumigène", weapon = "bzgas", metaux = 1, poudre = 1, meche = 1, ruban = 1},
+	{name = "Recharge grenade fumigène", weapon = "gzgas_ammo", metaux = 0, poudre = 5, meche = 0, ruban = 0}
 }
 
 Gmafiavoiture = {
