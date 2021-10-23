@@ -1137,6 +1137,11 @@ function fAdminMenu()
 							ExecuteCommand("setcoords -1893.23 2037.2 140.75")
 						end
 					end) 
+					RageUI.ButtonWithStyle("~m~Split Sides", nil, {RightLabel = "→"}, true, function(Hovered, Active, Selected)
+						if (Selected) then
+							ExecuteCommand("setcoords -430.44 259.48 82.99")
+						end
+					end) 
 				end
   
      
