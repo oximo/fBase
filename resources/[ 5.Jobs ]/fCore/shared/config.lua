@@ -131,6 +131,43 @@ GTequilavoiture = {
     {nom = "Blista", modele = "blista"},
 }
 
+--- fSlipt
+Split             = {}
+Split.jeveuxmarker = true --- true = Oui | false = Non
+Split.jeveuxblips = true --- true = Oui | false = Non
+
+Split.pos = {
+    coffre = {
+        position = {x = -433.45, y = 272.63, z = 83.42}
+    },
+    garage = {
+        position = {x = -410.47, y = 282.84, z = 83.23}
+    },
+    spawnvoiture = {
+        position = {x = -410.47, y = 282.84, z = 83.23, h = 175.73}
+    },
+    boss = {
+        position = {x = -441.8, y = 279.6, z = 83.02}
+    },
+    blips = {
+        position = {x = -433.45, y = 272.63, z = 83.42}
+    },
+    MenuPrendre = {
+        position = {x = -433.81, y = 276.21, z = 83.42}
+    },
+}
+
+Bar = {
+    item = {
+    {Label = "Pain", Name = "bread", Price = 1},
+    {Label = "Eau", Name = "water", Price = 1},
+    },
+}
+
+GSplitvoiture = {
+    {nom = "Blista", modele = "blista"},
+}
+
 --- fUnicorn
 Unicorn             = {}
 Unicorn.jeveuxmarker = true --- true = Oui | false = Non
