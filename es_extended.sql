@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22-Out-2021 às 13:18
+-- Tempo de geração: 24-Out-2021 às 00:40
 -- Versão do servidor: 10.4.18-MariaDB
 -- versão do PHP: 7.3.27
 
@@ -70,6 +70,8 @@ INSERT INTO `addon_account` (`name`, `label`, `shared`) VALUES
 ('society_motodealer', 'Concessionnaire Moto', 1),
 ('society_police', 'Police', 1),
 ('society_realestateagent', 'Agent immobilier', 1),
+('society_split', 'Slipt Sides', 1),
+('society_split_black', 'Slipt Sides black', 1),
 ('society_tabac', 'Tabac', 1),
 ('society_taxi', 'Taxi', 1),
 ('society_tequila', 'Tequila', 1),
@@ -139,7 +141,9 @@ INSERT INTO `addon_account_data` (`id`, `account_name`, `money`, `owner`) VALUES
 (44, 'society_mafia', 0, NULL),
 (53, 'society_cartel_black', 0, NULL),
 (54, 'society_mafia_black', 0, NULL),
-(57, 'society_boulangerie', 0, NULL);
+(57, 'society_boulangerie', 0, NULL),
+(62, 'society_split', 0, NULL),
+(63, 'society_split_black', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -180,6 +184,7 @@ INSERT INTO `addon_inventory` (`name`, `label`, `shared`) VALUES
 ('society_mechanic', 'Benny\'s', 1),
 ('society_motodealer', 'Concessionnaire Moto', 1),
 ('society_police', 'Police', 1),
+('society_split', 'Slipt Sides', 1),
 ('society_tabac', 'Tabac', 1),
 ('society_taxi', 'Taxi', 1),
 ('society_tequila', 'Tequila', 1),
@@ -299,6 +304,7 @@ INSERT INTO `datastore` (`name`, `label`, `shared`) VALUES
 ('society_mcdonalds', 'McDonalds', 1),
 ('society_mechanic', 'Benny\'s', 1),
 ('society_police', 'Police', 1),
+('society_split', 'Slipt Sides', 1),
 ('society_tabac', 'Tabac', 1),
 ('society_taxi', 'Taxi', 1),
 ('society_tequila', 'Tequila', 1),
@@ -348,11 +354,8 @@ INSERT INTO `datastore_data` (`id`, `name`, `owner`, `data`) VALUES
 (26, 'property', NULL, '{}'),
 (27, 'society_cartel', NULL, '{}'),
 (28, 'society_mafia', NULL, '{}'),
-(29, 'property', NULL, '{}'),
-(30, 'property', 'd38ac9b6e740bbd44c2c01094d8e2fff387ed99c', '{}'),
-(31, 'property', 'b50b2aae31b9feb77209d8848d093579e2fdc20d', '{}'),
-(32, 'property', 'af6a3d4bf071f1e095fa0c6193af5d1d3cebb1d4', '{}'),
-(33, 'society_boulangerie', NULL, '{}');
+(33, 'society_boulangerie', NULL, '{}'),
+(34, 'society_split', NULL, '{}');
 
 -- --------------------------------------------------------
 
@@ -405,7 +408,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('biere', 'Bière', 1, 0, 1),
 ('bird_crap_ammo', 'bird_crap_ammo', -1, 0, 1),
 ('bottle', 'Bottle', -1, 0, 1),
-('bread', 'Pain', 1, 0, 1),
+('bread', 'Bread', 1, 0, 1),
 ('bullpuprifle', 'Type 86-S', -1, 0, 1),
 ('bullpuprifle_mk2', 'bullpuprifle_mk2', -1, 0, 1),
 ('bullpupshotgun', 'Kel-Tec KSG', -1, 0, 1),
@@ -588,7 +591,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('vine', 'Vin', 1, 0, 1),
 ('vingtnuggets', 'Boite de 20 Nuggets', -1, 0, 1),
 ('vintagepistol', 'FN Model 1910', -1, 0, 1),
-('water', 'Eau', 1, 0, 1),
+('water', 'Water', 1, 0, 1),
 ('weed', 'Weed', 1, 0, 1),
 ('weed_pooch', 'Pochon de Weed', 1, 0, 1),
 ('wetsuit', 'Combinaison', 1, 0, 1),
@@ -640,6 +643,7 @@ INSERT INTO `jobs` (`name`, `label`) VALUES
 ('realestateagent', 'Agent immobilier'),
 ('reporter', 'Journaliste'),
 ('slaughterer', 'Abatteur'),
+('split', 'Slipt Sides'),
 ('tabac', 'Tabac'),
 ('tailor', 'Couturier'),
 ('taxi', 'Taxi'),
@@ -803,7 +807,11 @@ INSERT INTO `job_grades` (`id`, `job_name`, `grade`, `name`, `label`, `salary`, 
 (136, 'boulangerie', 0, 'recrue', 'Intérimaire', 200, 'null', 'null'),
 (137, 'boulangerie', 1, 'novice', 'Pâtissier', 400, 'null', 'null'),
 (138, 'boulangerie', 2, 'cdisenior', 'Chef', 600, 'null', 'null'),
-(139, 'boulangerie', 3, 'boss', 'Patron', 1000, 'null', 'null');
+(139, 'boulangerie', 3, 'boss', 'Patron', 1000, 'null', 'null'),
+(140, 'split', 0, 'barman', 'Barman', 200, 'null', 'null'),
+(141, 'split', 1, 'dancer', 'Danseur', 400, 'null', 'null'),
+(142, 'split', 2, 'viceboss', 'Gérant', 600, 'null', 'null'),
+(143, 'split', 3, 'boss', 'Patron', 1000, 'null', 'null');
 
 -- --------------------------------------------------------
 
@@ -1674,7 +1682,7 @@ ALTER TABLE `vehicle_categories`
 -- AUTO_INCREMENT de tabela `addon_account_data`
 --
 ALTER TABLE `addon_account_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT de tabela `addon_inventory_items`
@@ -1704,7 +1712,7 @@ ALTER TABLE `bwh_warnings`
 -- AUTO_INCREMENT de tabela `datastore_data`
 --
 ALTER TABLE `datastore_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de tabela `fourriere_report`
@@ -1716,7 +1724,7 @@ ALTER TABLE `fourriere_report`
 -- AUTO_INCREMENT de tabela `job_grades`
 --
 ALTER TABLE `job_grades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT de tabela `open_car`
