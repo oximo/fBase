@@ -1097,7 +1097,7 @@ function fAdminMenu()
 					end)     
 					RageUI.ButtonWithStyle("~m~Mécanicien", nil, {RightLabel = "→"}, true, function(Hovered, Active, Selected)
 						if (Selected) then
-							ExecuteCommand("setcoords -699.95 -2475.93 13.83")
+							ExecuteCommand("setcoords -206.48 -1303.52 31.25")
 						end
 					end)     
 				end
