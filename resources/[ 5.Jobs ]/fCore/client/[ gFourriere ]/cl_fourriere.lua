@@ -448,14 +448,14 @@ function Coffrefourriere()
 
                     RageUI.ButtonWithStyle("Retirer",nil, {RightLabel = "→→→"}, true, function(Hovered, Active, Selected)
                         if Selected then
-                            FRetirerobjet()
+                            FourriereRetirerobjet()
                             RageUI.CloseAll()
                         end
                     end)
                     
                     RageUI.ButtonWithStyle("Déposer",nil, {RightLabel = "→→→"}, true, function(Hovered, Active, Selected)
                         if Selected then
-                            ADeposerobjet()
+                            FourriereDeposerobjet()
                             RageUI.CloseAll()
                         end
                     end)
@@ -548,7 +548,7 @@ function vcivil_fourriere()
 end
 
 itemstock = {}
-function FRetirerobjet()
+function FourriereRetirerobjet()
     local Stockfourriere = RageUI.CreateMenu("Coffre", "Fourrière")
     ESX.TriggerServerCallback('gfourriere:getStockItems', function(items) 
     itemstock = items
@@ -563,7 +563,7 @@ function FRetirerobjet()
                                 if Selected then
                                     local count = KeyboardInput("Combien ?", "", 2)
                                     TriggerServerEvent('gfourriere:getStockItem', v.name, tonumber(count))
-                                    FRetirerobjet()
+                                    FourriereRetirerobjet()
                                 end
                             end)
                         end
@@ -578,7 +578,7 @@ function FRetirerobjet()
 end
 
 local PlayersItem = {}
-function ADeposerobjet()
+function FourriereDeposerobjet()
     local StockPlayer = RageUI.CreateMenu("Coffre", "Fourrière")
     ESX.TriggerServerCallback('gfourriere:getPlayerInventory', function(inventory)
         RageUI.Visible(StockPlayer, not RageUI.Visible(StockPlayer))
@@ -593,7 +593,7 @@ function ADeposerobjet()
                                             if Selected then
                                             local count = KeyboardInput("Combien ?", '' , 8)
                                             TriggerServerEvent('gfourriere:putStockItems', item.name, tonumber(count))
-                                            ADeposerobjet()
+                                            FourriereDeposerobjet()
                                         end
                                     end)
                                 end
