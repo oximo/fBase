@@ -782,7 +782,7 @@ function fAdminMenu()
 					RageUI.ButtonWithStyle("Entrer un ped custom", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
 						if (Selected) then   
 						local j1 = PlayerId()
-						local newped = Keyboardput('Entrer le nom de votre Ped', '', 45)
+						local newped = fAdminKeyboardInput('Entrer le nom de votre Ped', '', 45)
 						local p1 = GetHashKey(newped)
 						RequestModel(p1)
 						while not HasModelLoaded(p1) do
