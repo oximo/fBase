@@ -30,7 +30,3 @@ Extended 1.3 aka Legacy
 - F5 (Krz_personalmenu)
 - Prison de la v5 (adapté à la base)
 - Custom véhicule (RageUI)
-
-✅ Le discord de Fellow: https://discord.gg/87UvfZPJN9
-
-✅ Discord: Fellow#3858
