@@ -7,8 +7,6 @@ Citizen.CreateThread(function()
     end
 end)
 
-panier = {}
-
 Item = {
     Nourritures = {
     {Label = "Pain", Name = "bread", Price = 5},
