@@ -239,6 +239,7 @@ end
                   arms = parms_1 ,
                   arms_2 = parms_2,
                   bags_1 = pbags_1 ,
+                  bags_2 = pbags_2 ,
                   pants_1  = ppants_1,
                   pants_2  = ppants_2,
                   shoes_1  = pshoes_1,
@@ -275,6 +276,9 @@ end
                       end
                       if pbags_1 ~= nil then 
                         comp.bags_1   = pbags_1
+                      end
+                      if pbags_2 ~= nil then 
+                        comp.bags_2   = pbags_2
                       end
                       if ppants_1 ~= nil then 
                         comp.pants_1  = ppants_1
@@ -520,6 +524,18 @@ end
           end
 
         end) 
+
+        if #bags_2c ~= 0 then
+          RageUI.List('Couleur : ', bags_2c, index.bags_2, nil, {}, true, function(Hovered, Active, Selected, Index)
+            index.bags_2 = Index
+      
+            if (Active) then 
+      
+              SetPedComponentVariation(PlayerPedId(), 5, pbags_1, Index-1, 2)
+               pbags_2 = Index-1
+            end
+          end)
+        end  
 
         RageUI.ButtonWithStyle('Valider vos articles', nil, {RightBadge = RageUI.BadgeStyle.Clothes}, true, function(Hovered, Active, Selected)
             if (Selected) then 
