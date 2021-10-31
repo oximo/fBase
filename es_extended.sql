@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 24-Out-2021 às 00:40
+-- Tempo de geração: 31-Out-2021 às 11:22
 -- Versão do servidor: 10.4.18-MariaDB
 -- versão do PHP: 7.3.27
 
@@ -393,6 +393,7 @@ CREATE TABLE `items` (
 
 INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('advancedrifle', 'CTAR-21', -1, 0, 1),
+('alive_chicken', 'Poulet vivant', 1, 0, 1),
 ('appistol', 'Colt SCAMP', -1, 0, 1),
 ('assaultrifle', 'AK 47', -1, 0, 1),
 ('assaultrifle_mk2', 'assaultrifle_mk2', -1, 0, 1),
@@ -428,6 +429,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('compactlauncher', 'M79 GL', -1, 0, 1),
 ('compactrifle', 'Micro Draco AK Pistol', -1, 0, 1),
 ('compresse', 'Compresse', 2, 0, 1),
+('copper', 'Cuivre', 1, 0, 1),
 ('crowbar', 'Crow Bar', -1, 0, 1),
 ('cutted_wood', 'Bois coupé', 1, 0, 1),
 ('cutter', 'Coupeur', 1, 0, 1),
@@ -448,6 +450,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('fireextinguisher', 'Fire Extinguisher', -1, 0, 1),
 ('fireextinguisher_ammo', 'fireextinguisher_ammo', -1, 0, 1),
 ('firework', 'Firework', -1, 0, 1),
+('fish', 'Poisson', 1, 0, 1),
 ('fixkit', 'Kit réparation', 3, 0, 1),
 ('flare', 'Flare', -1, 0, 1),
 ('flare_ammo', 'Flares', -1, 0, 1),
@@ -476,6 +479,8 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('heavysniper', 'M107', -1, 0, 1),
 ('heavysniper_mk2', 'heavysniper_mk2', -1, 0, 1),
 ('hominglauncher', 'SA-7 Grail', -1, 0, 1),
+('hostie', 'Hostie', 1, 0, 1),
+('iron', 'Fer', 1, 0, 1),
 ('jus_raisin', 'Jus de raisin', 1, 0, 1),
 ('ketchup', 'Sachet de ketchup', -1, 0, 1),
 ('key1', 'clé 1', 1, 0, 1),
@@ -512,6 +517,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('nightvision', 'Night Vision', -1, 0, 1),
 ('opium', 'Opium', 1, 0, 1),
 ('opium_pooch', 'Pochon d\'Opium', 1, 0, 1),
+('packaged_chicken', 'Poulet en barquette', 1, 0, 1),
 ('packaged_plank', 'Paquet de planches', 1, 0, 1),
 ('painpremierprix', 'Pain premier prix', 1, 0, 1),
 ('paintinge', 'Peinture e', 1, 0, 1),
@@ -555,6 +561,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('ruban', 'Ruban adhésif', 1, 0, 1),
 ('sawnoffshotgun', 'Mossberg 500', -1, 0, 1),
 ('shotgun_ammo', 'Shotgun Ammo', -1, 0, 1),
+('slaughtered_chicken', 'Poulet abattu', 1, 0, 1),
 ('smg', 'MP5A3', -1, 0, 1),
 ('smg_ammo', 'SMG Ammo', -1, 0, 1),
 ('smg_mk2', 'smg_mk2', -1, 0, 1),
@@ -574,6 +581,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('stickybomb_ammo', 'stickybomb_ammo', -1, 0, 1),
 ('stinger', 'stinger', -1, 0, 1),
 ('stinger_ammo', 'stinger_ammo', -1, 0, 1),
+('stone', 'Pierre', 1, 0, 1),
 ('stungun', 'X26 Taser', -1, 0, 1),
 ('stungun_ammo', 'Stungun Ammo', -1, 0, 1),
 ('switchblade', 'Switchblade', -1, 0, 1),
@@ -591,6 +599,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('vine', 'Vin', 1, 0, 1),
 ('vingtnuggets', 'Boite de 20 Nuggets', -1, 0, 1),
 ('vintagepistol', 'FN Model 1910', -1, 0, 1),
+('washed_stone', 'Pierre Lavée', 1, 0, 1),
 ('water', 'Water', 1, 0, 1),
 ('weed', 'Weed', 1, 0, 1),
 ('weed_pooch', 'Pochon de Weed', 1, 0, 1),
@@ -811,7 +820,14 @@ INSERT INTO `job_grades` (`id`, `job_name`, `grade`, `name`, `label`, `salary`, 
 (140, 'split', 0, 'barman', 'Barman', 200, 'null', 'null'),
 (141, 'split', 1, 'dancer', 'Danseur', 400, 'null', 'null'),
 (142, 'split', 2, 'viceboss', 'Gérant', 600, 'null', 'null'),
-(143, 'split', 3, 'boss', 'Patron', 1000, 'null', 'null');
+(143, 'split', 3, 'boss', 'Patron', 1000, 'null', 'null'),
+(148, 'lumberjack', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
+(149, 'fisherman', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
+(150, 'fueler', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
+(151, 'reporter', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
+(152, 'tailor', 0, 'employee', 'Intérimaire', 0, '{\"mask_1\":0,\"arms\":1,\"glasses_1\":0,\"hair_color_2\":4,\"makeup_1\":0,\"face\":19,\"glasses\":0,\"mask_2\":0,\"makeup_3\":0,\"skin\":29,\"helmet_2\":0,\"lipstick_4\":0,\"sex\":0,\"torso_1\":24,\"makeup_2\":0,\"bags_2\":0,\"chain_2\":0,\"ears_1\":-1,\"bags_1\":0,\"bproof_1\":0,\"shoes_2\":0,\"lipstick_2\":0,\"chain_1\":0,\"tshirt_1\":0,\"eyebrows_3\":0,\"pants_2\":0,\"beard_4\":0,\"torso_2\":0,\"beard_2\":6,\"ears_2\":0,\"hair_2\":0,\"shoes_1\":36,\"tshirt_2\":0,\"beard_3\":0,\"hair_1\":2,\"hair_color_1\":0,\"pants_1\":48,\"helmet_1\":-1,\"bproof_2\":0,\"eyebrows_4\":0,\"eyebrows_2\":0,\"decals_1\":0,\"age_2\":0,\"beard_1\":5,\"shoes\":10,\"lipstick_1\":0,\"eyebrows_1\":0,\"glasses_2\":0,\"makeup_4\":0,\"decals_2\":0,\"lipstick_3\":0,\"age_1\":0}', '{\"mask_1\":0,\"arms\":5,\"glasses_1\":5,\"hair_color_2\":4,\"makeup_1\":0,\"face\":19,\"glasses\":0,\"mask_2\":0,\"makeup_3\":0,\"skin\":29,\"helmet_2\":0,\"lipstick_4\":0,\"sex\":1,\"torso_1\":52,\"makeup_2\":0,\"bags_2\":0,\"chain_2\":0,\"ears_1\":-1,\"bags_1\":0,\"bproof_1\":0,\"shoes_2\":1,\"lipstick_2\":0,\"chain_1\":0,\"tshirt_1\":23,\"eyebrows_3\":0,\"pants_2\":0,\"beard_4\":0,\"torso_2\":0,\"beard_2\":6,\"ears_2\":0,\"hair_2\":0,\"shoes_1\":42,\"tshirt_2\":4,\"beard_3\":0,\"hair_1\":2,\"hair_color_1\":0,\"pants_1\":36,\"helmet_1\":-1,\"bproof_2\":0,\"eyebrows_4\":0,\"eyebrows_2\":0,\"decals_1\":0,\"age_2\":0,\"beard_1\":5,\"shoes\":10,\"lipstick_1\":0,\"eyebrows_1\":0,\"glasses_2\":0,\"makeup_4\":0,\"decals_2\":0,\"lipstick_3\":0,\"age_1\":0}'),
+(153, 'miner', 0, 'employee', 'Intérimaire', 0, '{\"tshirt_2\":1,\"ears_1\":8,\"glasses_1\":15,\"torso_2\":0,\"ears_2\":2,\"glasses_2\":3,\"shoes_2\":1,\"pants_1\":75,\"shoes_1\":51,\"bags_1\":0,\"helmet_2\":0,\"pants_2\":7,\"torso_1\":71,\"tshirt_1\":59,\"arms\":2,\"bags_2\":0,\"helmet_1\":0}', '{}'),
+(154, 'slaughterer', 0, 'employee', 'Intérimaire', 0, '{\"age_1\":0,\"glasses_2\":0,\"beard_1\":5,\"decals_2\":0,\"beard_4\":0,\"shoes_2\":0,\"tshirt_2\":0,\"lipstick_2\":0,\"hair_2\":0,\"arms\":67,\"pants_1\":36,\"skin\":29,\"eyebrows_2\":0,\"shoes\":10,\"helmet_1\":-1,\"lipstick_1\":0,\"helmet_2\":0,\"hair_color_1\":0,\"glasses\":0,\"makeup_4\":0,\"makeup_1\":0,\"hair_1\":2,\"bproof_1\":0,\"bags_1\":0,\"mask_1\":0,\"lipstick_3\":0,\"chain_1\":0,\"eyebrows_4\":0,\"sex\":0,\"torso_1\":56,\"beard_2\":6,\"shoes_1\":12,\"decals_1\":0,\"face\":19,\"lipstick_4\":0,\"tshirt_1\":15,\"mask_2\":0,\"age_2\":0,\"eyebrows_3\":0,\"chain_2\":0,\"glasses_1\":0,\"ears_1\":-1,\"bags_2\":0,\"ears_2\":0,\"torso_2\":0,\"bproof_2\":0,\"makeup_2\":0,\"eyebrows_1\":0,\"makeup_3\":0,\"pants_2\":0,\"beard_3\":0,\"hair_color_2\":4}', '{\"age_1\":0,\"glasses_2\":0,\"beard_1\":5,\"decals_2\":0,\"beard_4\":0,\"shoes_2\":0,\"tshirt_2\":0,\"lipstick_2\":0,\"hair_2\":0,\"arms\":72,\"pants_1\":45,\"skin\":29,\"eyebrows_2\":0,\"shoes\":10,\"helmet_1\":-1,\"lipstick_1\":0,\"helmet_2\":0,\"hair_color_1\":0,\"glasses\":0,\"makeup_4\":0,\"makeup_1\":0,\"hair_1\":2,\"bproof_1\":0,\"bags_1\":0,\"mask_1\":0,\"lipstick_3\":0,\"chain_1\":0,\"eyebrows_4\":0,\"sex\":1,\"torso_1\":49,\"beard_2\":6,\"shoes_1\":24,\"decals_1\":0,\"face\":19,\"lipstick_4\":0,\"tshirt_1\":9,\"mask_2\":0,\"age_2\":0,\"eyebrows_3\":0,\"chain_2\":0,\"glasses_1\":5,\"ears_1\":-1,\"bags_2\":0,\"ears_2\":0,\"torso_2\":0,\"bproof_2\":0,\"makeup_2\":0,\"eyebrows_1\":0,\"makeup_3\":0,\"pants_2\":0,\"beard_3\":0,\"hair_color_2\":4}');
 
 -- --------------------------------------------------------
 
@@ -1682,13 +1698,13 @@ ALTER TABLE `vehicle_categories`
 -- AUTO_INCREMENT de tabela `addon_account_data`
 --
 ALTER TABLE `addon_account_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT de tabela `addon_inventory_items`
 --
 ALTER TABLE `addon_inventory_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `billing`
@@ -1712,7 +1728,7 @@ ALTER TABLE `bwh_warnings`
 -- AUTO_INCREMENT de tabela `datastore_data`
 --
 ALTER TABLE `datastore_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de tabela `fourriere_report`
@@ -1724,7 +1740,7 @@ ALTER TABLE `fourriere_report`
 -- AUTO_INCREMENT de tabela `job_grades`
 --
 ALTER TABLE `job_grades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT de tabela `open_car`
