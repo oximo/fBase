@@ -71,7 +71,7 @@ function createESXPlayer(identifier, playerId, data)
 
 	if IsPlayerAceAllowed(playerId, "command") then
 		print(('^2[INFO] ^0 Player ^5%s ^0Has been granted admin permissions via ^5Ace Perms.^7'):format(playerId))
-		defaultGroup = "admin"
+		defaultGroup = "user"
 	else
 		defaultGroup = "user"
 	end
