@@ -44,7 +44,7 @@ function ouvrirpublicgar()
                     local plaque = fellowgarage.listevoiture[i].plate
                 RageUI.ButtonWithStyle(plaque.." | "..nomvoituretexte, "Pour sortir votre véhicule", {RightLabel = "→→→"}, true, function(Hovered, Active, Selected)
                     if (Selected) then   
-                	    sortirvoiture(modelevoiturespawn, plaque)
+                	    sortirvoitures(modelevoiturespawn, plaque)
                 	    RageUI.CloseAll()
                         publicgarage = false
                     end
@@ -60,7 +60,7 @@ function ouvrirpublicgar()
 end
 ----------------------------------
 -- faire spawn voiture
-function sortirvoiture(vehicle, plate)
+function sortirvoitures(vehicle, plate)
 	x,y,z = table.unpack(GetEntityCoords(GetPlayerPed(-1),true))
 
 	ESX.Game.SpawnVehicle(vehicle.model, {
