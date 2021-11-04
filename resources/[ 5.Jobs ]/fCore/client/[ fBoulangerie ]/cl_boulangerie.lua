@@ -1,34 +1,16 @@
 ESX = nil
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-local PlayerData = {}
-
-
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-     PlayerData = xPlayer
-end)
-
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)  
-	PlayerData.job = job  
-	Citizen.Wait(5000) 
-end)
-
 Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(10)
+    while ESX == nil do
+        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+        Citizen.Wait(10)
     end
+
     while ESX.GetPlayerData().job == nil do
-		Citizen.Wait(10)
+        Citizen.Wait(10)
     end
-    if ESX.IsPlayerLoaded() then
 
-		ESX.PlayerData = ESX.GetPlayerData()
-
-    end
+    ESX.PlayerData = ESX.GetPlayerData()
 end)
 
 RegisterNetEvent('esx:playerLoaded')
@@ -36,17 +18,10 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 	ESX.PlayerData = xPlayer
 end)
 
-
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
-
-RegisterNetEvent('esx:setJob2')
-AddEventHandler('esx:setJob2', function(job2)
-    ESX.PlayerData.job2 = job2
-end)
-
 
 Citizen.CreateThread(function()
     if boulangerie.jeveuxblips then
@@ -173,9 +148,6 @@ Keys.Register('F6', 'Boulangerie', 'Ouvrir le menu Boulangerie', function()
 	end
 end)
 
-
-
-
 function Coffreboulangerie()
     local Cboulangerie = RageUI.CreateMenu("Coffre", "Boulangerie")
         RageUI.Visible(Cboulangerie, not RageUI.Visible(Cboulangerie))
@@ -210,7 +182,7 @@ function Coffreboulangerie()
 
                     RageUI.ButtonWithStyle("Remettre sa tenue",nil, {RightLabel = ""}, true, function(Hovered, Active, Selected)
                         if Selected then
-                            vcivil_boulangerie()
+                            vcivil()
                             RageUI.CloseAll()
                         end
                     end)
@@ -335,7 +307,7 @@ function tenueboulangerie()
 end
 
 
-function vcivil_boulangerie()
+function vcivil()
     ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
         TriggerEvent('skinchanger:loadSkin', skin)
        end)
