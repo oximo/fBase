@@ -343,7 +343,7 @@ function vcivil_boulangerie()
 
 itemstock = {}
 function boulangerieRetirerobjet()
-    local Stockboulangerie = RageUI.CreateMenu("Coffre", "Boulangerie")
+    local StockBoulangerie = RageUI.CreateMenu("Coffre", "Boulangerie")
     ESX.TriggerServerCallback('boulangerie:getStockItems', function(items) 
     itemstock = items
     RageUI.Visible(StockBoulangerie, not RageUI.Visible(StockBoulangerie))
