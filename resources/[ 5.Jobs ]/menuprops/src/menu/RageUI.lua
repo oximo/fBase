@@ -4,16 +4,6 @@
 --- DateTime: 21/04/2019 21:20
 ---
 
-print("")
-print("^1----------------------------------------------^0")
-print("")
-print("^2Présenter par Five-Dev^0")
-print("")
-print("^4Description : Menu Props améliorer par Altix^0")
-print("")
-print("^1----------------------------------------------^0")
-print("")
-
 ---round
 ---@param num number
 ---@param numDecimalPlaces number
