@@ -1,6 +1,6 @@
 # fBase
 
-Discord: https://discord.gg/VEmVnmZZ
+👌 Discord: https://discord.gg/VEmVnmZZ
 
 Extended 1.3 aka Legacy
 
