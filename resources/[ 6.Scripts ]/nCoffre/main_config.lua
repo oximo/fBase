@@ -1,6 +1,6 @@
 Cfg_Coffre = {
     Prefix = "nCoffre",
-    Credit = "nCoffre is started, created by Nehco#7797 or Nehco#0069, the other Nehco are fake. My shop : https://discord.gg/wKEmuXywha, Five-Shop : https://discord.gg/BjaWpQgtGd",
+    Credit = "nCoffre is started, created by Nehco#7797 or Nehco#0069",
     ESXEvent = "esx:getSharedObject",
     ESXLoaded = nil,
     ServerSide = TriggerServerEvent,
