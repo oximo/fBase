@@ -32,5 +32,5 @@ Extended 1.3 aka Legacy
 - Magasin de masque et accessoires (RageUI)
 - Coffre véhicule by Nehco (RageUI)
 - F5 (Krz_personalmenu)
-- Prison de la v5 (adapté à la base)
+- Prison (RageUI)
 - Custom véhicule (RageUI)
