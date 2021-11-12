@@ -89,7 +89,7 @@ while catalogue do
 				vert = fCatalogueKeyboardInput("Pourcentagem de vert", "", 3)
 				bleu = fCatalogueKeyboardInput("Pourcentagem de bleu", "", 3)
 				posessaie = GetEntityCoords(PlayerPedId())
-				spawnuniCar(modelevoiture, r, g, b)
+				spawnuniCarCatalogue(modelevoiture, r, g, b)
 			end
 		end)
 	end, function()
@@ -176,7 +176,7 @@ while cataloguemoto do
 				vert = fCatalogueKeyboardInput("Pourcentagem de vert", "", 3)
 				bleu = fCatalogueKeyboardInput("Pourcentagem de bleu", "", 3)
 				posessaie = GetEntityCoords(PlayerPedId())
-				spawnuniCar(modelevoiture, r, g, b)
+				spawnuniCarCatalogue(modelevoiture, r, g, b)
 			end
 		end)
 	end, function()
@@ -210,7 +210,7 @@ Citizen.CreateThread(function()
 	Citizen.Wait(Timer)   
 end
 end)
-function spawnuniCar(car)
+function spawnuniCarCatalogue(car)
     local car = GetHashKey(car)
     RequestModel(car)
     while not HasModelLoaded(car) do
