@@ -78,14 +78,6 @@ Citizen.CreateThread(function()
 				RemoveMpGamerTag(gamerTags[v])
 			end
 		end
-
-		for k,v in pairs(GetActivePlayers()) do
-			if NetworkIsPlayerTalking(v) then
-				local pPed = GetPlayerPed(v)
-				local pCoords = GetEntityCoords(pPed)
-				DrawMarker(32, pCoords.x, pCoords.y, pCoords.z+1.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 0, 255, 0, 170, 0, 1, 2, 0, nil, nil, 0)
-			end
-		end
     end
 end)
 
