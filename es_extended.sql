@@ -603,7 +603,6 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('water', 'Water', 1, 0, 1),
 ('weed', 'Weed', 1, 0, 1),
 ('weed_pooch', 'Pochon de Weed', 1, 0, 1),
-('wetsuit', 'Combinaison', 1, 0, 1),
 ('wood', 'Bois', 1, 0, 1),
 ('wool', 'Laine', 1, 0, 1),
 ('wrench', 'wrench', -1, 0, 1);
