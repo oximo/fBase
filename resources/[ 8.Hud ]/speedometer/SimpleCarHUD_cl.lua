@@ -6,7 +6,7 @@ local screenPosY = 0.882                    -- Y coordinate (top left corner of 
 local enableController = true               -- Enable controller inputs
 
 -- SPEEDOMETER PARAMETERS
-local speedLimit = 100.0                    -- Speed limit for changing speed color
+local speedLimit = 200.0                    -- Speed limit for changing speed color
 local speedColorText = {255, 255, 255}      -- Color used to display speed label text
 local speedColorUnder = {255, 255, 255}     -- Color used to display speed when under speedLimit
 local speedColorOver = {255, 96, 96}        -- Color used to display speed when over speedLimit
@@ -19,7 +19,7 @@ local fuelColorOver = {255, 255, 255}       -- Color used to display fuel when g
 local fuelColorUnder = {255, 96, 96}        -- Color used to display fuel warning
 
 -- SEATBELT PARAMETERS
-local seatbeltInput = 311                   -- Toggle seatbelt on/off with K or DPAD down (controller)
+local seatbeltInput = 323                  -- Toggle seatbelt on/off with K or DPAD down (controller)
 local seatbeltPlaySound = true              -- Play seatbelt sound
 local seatbeltDisableExit = true            -- Disable vehicle exit when seatbelt is enabled
 local seatbeltEjectSpeed = 45.0             -- Speed threshold to eject player (MPH)
@@ -56,8 +56,14 @@ Citizen.CreateThread(function()
     local seatbeltIsOn = false
 
     while true do
+
+        if pedInVeh == false then
+            wait = 750
+        else
+            wait = 0
+        end
         -- Loop forever and update HUD every frame
-        Citizen.Wait(0)
+        Citizen.Wait(wait)
 
         -- Get player PED, position and vehicle and save to locals
         local player = GetPlayerPed(-1)
@@ -82,6 +88,11 @@ Citizen.CreateThread(function()
             -- Display heading, street name and zone when possible
             drawTxt(locationText, 4, locationColorText, 0.5, screenPosX, screenPosY + 0.075)
         
+            local vehicle = GetVehiclePedIsIn(player, false)
+
+                currentFuel = GetVehicleFuelLevel(vehicle)
+
+
             -- Display remainder of HUD when engine is on and vehicle is not a bicycle
             local vehicleClass = GetVehicleClass(vehicle)
             if pedInVeh and GetIsVehicleEngineRunning(vehicle) and vehicleClass ~= 13 then
@@ -146,15 +157,11 @@ Citizen.CreateThread(function()
                     drawTxt(("%.3d"):format(math.ceil(speed)), 2, speedColor, 0.8, screenPosX + 0.000, screenPosY + 0.000)
                     drawTxt("MPH", 2, speedColorText, 0.4, screenPosX + 0.030, screenPosY + 0.018)
                 end
-                
+                 
                 -- Draw fuel gauge
                 local fuelColor = (currentFuel >= fuelWarnLimit) and fuelColorOver or fuelColorUnder
                 drawTxt(("%.3d"):format(math.ceil(currentFuel)), 2, fuelColor, 0.8, screenPosX + 0.055, screenPosY + 0.000)
                 drawTxt("ESSENCE", 2, fuelColorText, 0.4, screenPosX + 0.085, screenPosY + 0.018)
-
-                -- Draw cruise control status
-                local cruiseColor = cruiseIsOn and cruiseColorOn or cruiseColorOff
-                drawTxt("CRUISE", 2, cruiseColor, 0.4, screenPosX + 0.040, screenPosY + 0.048)
 
                 -- Draw seatbelt status if not a motorcyle
                 if vehicleClass ~= 8 then
@@ -162,51 +169,6 @@ Citizen.CreateThread(function()
                     drawTxt("CEINTURE", 2, seatbeltColor, 0.4, screenPosX + 0.080, screenPosY + 0.048)
                 end
             end
-        end
-    end
-end)
-
--- Secondary thread to update strings
-Citizen.CreateThread(function()
-    while true do
-        -- Update when player is in a vehicle or on foot (if enabled)
-        if pedInVeh or locationAlwaysOn then
-            -- Get player, position and vehicle
-            local player = GetPlayerPed(-1)
-            local position = GetEntityCoords(player)
-
-            -- Update time text string
-            local hour = GetClockHours()
-            local minute = GetClockMinutes()
-            timeText = ("%.2d"):format((hour == 0) and 12 or hour) .. ":" .. ("%.2d"):format( minute) .. ((hour < 12) and " AM" or " PM")
-
-            -- Get heading and zone from lookup tables and street name from hash
-            local heading = directions[math.floor((GetEntityHeading(player) + 22.5) / 45.0)]
-            local zoneNameFull = zones[GetNameOfZone(position.x, position.y, position.z)]
-            local streetName = GetStreetNameFromHashKey(GetStreetNameAtCoord(position.x, position.y, position.z))
-            
-            -- Update location text string
-            locationText = heading
-            locationText = (streetName == "" or streetName == nil) and (locationText) or (locationText .. " | " .. streetName)
-            locationText = (zoneNameFull == "" or zoneNameFull == nil) and (locationText) or (locationText .. " | " .. zoneNameFull)
-
-            -- Update fuel when in a vehicle
-            if pedInVeh then
-                local vehicle = GetVehiclePedIsIn(player, false)
-                if fuelShowPercentage then
-                    -- Display remaining fuel as a percentage
-                    currentFuel = 100 * GetVehicleFuelLevel(vehicle) / GetVehicleHandlingFloat(vehicle,"CHandlingData","fPetrolTankVolume")
-                else
-                    -- Display remainign fuel in liters
-                    currentFuel = GetVehicleFuelLevel(vehicle)
-                end
-            end
-
-            -- Update every second
-            Citizen.Wait(1000)
-        else
-            -- Wait until next frame
-            Citizen.Wait(0)
         end
     end
 end)
