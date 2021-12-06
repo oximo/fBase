@@ -605,7 +605,11 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('weed_pooch', 'Pochon de Weed', 1, 0, 1),
 ('wood', 'Bois', 1, 0, 1),
 ('wool', 'Laine', 1, 0, 1),
-('wrench', 'wrench', -1, 0, 1);
+('wrench', 'wrench', -1, 0, 1),
+('pistol_ammo_box', 'Chargeur pistolet', -1, 0, 1),
+('smg_ammo_box', 'Chargeur smg', -1, 0, 1),
+('rifle_ammo_box', 'Chargeur rifle', -1, 0, 1),
+('shotgun_ammo_box', 'Chargeur shotgun', -1, 0, 1);
 
 -- --------------------------------------------------------
 
