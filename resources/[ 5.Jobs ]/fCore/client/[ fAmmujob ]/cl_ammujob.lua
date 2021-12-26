@@ -585,6 +585,10 @@ function MenuCraftAmmu()
                                 RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
                                 local item = Ammujob.craft[13].weapon
                                 TriggerServerEvent('craft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbcan), tonumber(choixnblev))
+			    elseif tonumber(choixnbmet) == Ammujob.craft[14].metaux and tonumber(choixnbmeche) == Ammujob.craft[14].meche and tonumber(choixnbcan) == Ammujob.craft[14].canon and tonumber(choixnblev) == Ammujob.craft[14].levier then
+                                RageUI.Popup({message = "~g~Le craft a réussi, vous avez perdu tout les matériaux utilisé et vous avez reçu votre arme"})
+                                local item = Ammujob.craft[14].weapon
+                                TriggerServerEvent('craft:gg', item, tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbcan), tonumber(choixnblev))
                             else
                                 RageUI.Popup({message = "~r~Craft non réussi, vous avez perdu tout les matériaux utilisé!"})
                                 TriggerServerEvent('h4ci_craft:nonvalider', tonumber(choixnbmet), tonumber(choixnbmeche), tonumber(choixnbcan), tonumber(choixnblev))
