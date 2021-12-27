@@ -6,6 +6,58 @@ TriggerEvent('esx_phone:registerNumber', 'motodealer', 'alerte motodealer', true
 
 TriggerEvent('esx_society:registerSociety', 'motodealer', 'Concessionnaire Moto', 'society_motodealer', 'society_motodealer', 'society_motodealer', {type = 'public'})
 
+ESX.RegisterServerCallback('fellow_moto:getStockItems', function(source, cb)
+    TriggerEvent('esx_addoninventory:getSharedInventory', 'society_motodealer', function(inventory)
+        cb(inventory.items)
+    end)
+end)
+
+RegisterNetEvent('fellow_moto:getStockItem')
+AddEventHandler('fellow_moto:getStockItem', function(itemName, count)
+	local _source = source
+	local xPlayer = ESX.GetPlayerFromId(_source)
+
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_motodealer', function(inventory)
+		local inventoryItem = inventory.getItem(itemName)
+
+		-- is there enough in the society?
+		if count > 0 and inventoryItem.count >= count then
+
+			-- can the player carry the said amount of x item?
+				inventory.removeItem(itemName, count)
+				xPlayer.addInventoryItem(itemName, count)
+				TriggerClientEvent('esx:showNotification', _source, 'Objet retiré', count, inventoryItem.label)
+		else
+			TriggerClientEvent('esx:showNotification', _source, "Quantité invalide")
+		end
+	end)
+end)
+
+ESX.RegisterServerCallback('fellow_moto:getPlayerInventory', function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local items   = xPlayer.inventory
+
+	cb({items = items})
+end)
+
+RegisterNetEvent('fellow_moto:putStockItems')
+AddEventHandler('fellow_moto:putStockItems', function(itemName, count)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local sourceItem = xPlayer.getInventoryItem(itemName)
+
+	TriggerEvent('esx_addoninventory:getSharedInventory', 'society_motodealer', function(inventory)
+		local inventoryItem = inventory.getItem(itemName)
+
+		-- does the player have enough of the item?
+		if sourceItem.count >= count and count > 0 then
+			xPlayer.removeInventoryItem(itemName, count)
+			inventory.addItem(itemName, count)
+			xPlayer.showNotification(_U('have_deposited', count, inventoryItem.name))
+		else
+			TriggerClientEvent('esx:showNotification', _source, "Quantité invalide")
+		end
+	end)
+end)
 
 ESX.RegisterServerCallback('fellow_moto:recuperercategoriemoto', function(source, cb)
     local catemoto = {}
