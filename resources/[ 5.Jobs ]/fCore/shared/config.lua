@@ -1427,6 +1427,9 @@ ConcessMoto.pos = {
     serrurier = {
         position = {x = 271.89, y = -1168.13, z = 29.28}
     },
+	coffre = {
+		position = {x = 272.49, y = -1158.34, z = 33.27}
+	},
     spawnmoto = {
         position = {x = 276.48, y = -1159.51, z = 28.78, h = 92.8}
     },
