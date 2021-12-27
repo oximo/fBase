@@ -138,6 +138,120 @@ Keys.Register('F6', 'ConcessMoto', 'Ouvrir le menu Concessionnaire Moto', functi
 	end
 end)
 
+function CoffreMoto()
+	local CoffreMoto = RageUI.CreateMenu("Concessionnaire", "Coffre")
+        RageUI.Visible(CoffreMoto, not RageUI.Visible(CoffreMoto))
+            while CoffreMoto do
+            Citizen.Wait(0)
+            RageUI.IsVisible(CoffreMoto, true, true, true, function()
+
+                RageUI.Separator("↓ Objet ↓")
+
+                    RageUI.ButtonWithStyle("Retirer",nil, {RightLabel = ""}, true, function(Hovered, Active, Selected)
+                        if Selected then
+                            ConcessMotoRetirerobjet()
+                            RageUI.CloseAll()
+                        end
+                    end)
+                    
+                    RageUI.ButtonWithStyle("Déposer",nil, {RightLabel = ""}, true, function(Hovered, Active, Selected)
+                        if Selected then
+                            ConcessMotoDeposerobjet()
+                            RageUI.CloseAll()
+                        end
+                    end)
+                end, function()
+                end)
+            if not RageUI.Visible(CoffreMoto) then
+            CoffreMoto = RMenu:DeleteType("CoffreMoto", true)
+        end
+    end
+end
+
+Citizen.CreateThread(function()
+        while true do
+            local Timer = 500
+            if ESX.PlayerData.job and ESX.PlayerData.job.name == 'motodealer' then  
+            local plycrdjob = GetEntityCoords(GetPlayerPed(-1), false)
+            local jobdist = Vdist(plycrdjob.x, plycrdjob.y, plycrdjob.z, ConcessMoto.pos.coffre.position.x, ConcessMoto.pos.coffre.position.y, ConcessMoto.pos.coffre.position.z)
+            if jobdist <= 10.0 and ConcessMoto.jeveuxmarker then
+                Timer = 0
+                DrawMarker(20, ConcessMoto.pos.coffre.position.x, ConcessMoto.pos.coffre.position.y, ConcessMoto.pos.coffre.position.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 1, 2, 0, nil, nil, 0)
+                end
+                if jobdist <= 1.0 then
+                    Timer = 0
+                        RageUI.Text({ message = "Appuyez sur ~y~[E]~s~ pour accéder au coffre", time_display = 1 })
+                        if IsControlJustPressed(1,51) then
+                            CoffreMoto()
+                    end   
+                end
+            end 
+        Citizen.Wait(Timer)   
+    end
+end)
+
+itemstock = {}
+function ConcessMotoRetirerobjet()
+	local StockMotoConcess = RageUI.CreateMenu("Concessionnaire", "Coffre")
+	ESX.TriggerServerCallback('fellow_moto:getStockItems', function(items) 
+	itemstock = items
+	RageUI.Visible(StockMotoConcess, not RageUI.Visible(StockMotoConcess))
+        while StockMotoConcess do
+		    Citizen.Wait(0)
+		        RageUI.IsVisible(StockMotoConcess, true, true, true, function()
+                        for k,v in pairs(itemstock) do 
+                            if v.count ~= 0 then
+                            RageUI.ButtonWithStyle(v.label, nil, {RightLabel = v.count}, true, function(Hovered, Active, Selected)
+                                if Selected then
+                                    local count = KeyboardInput("Combien ?", '' , 8)
+                                    TriggerServerEvent('fellow_moto:getStockItem', v.name, tonumber(count))
+                                    ConcessMotoRetirerobjet()
+                                end
+                            end)
+                        end
+                    end
+                end, function()
+                end)
+            if not RageUI.Visible(StockMotoConcess) then
+            StockMotoConcess = RMenu:DeleteType("StockMotoConcess", true)
+        end
+    end
+end)
+end
+
+local PlayersItem = {}
+function ConcessMotoDeposerobjet()
+    local DepositMotoConcess = RageUI.CreateMenu("Concessionnaire", "Coffre")
+    ESX.TriggerServerCallback('fellow_moto:getPlayerInventory', function(inventory)
+        RageUI.Visible(DepositMotoConcess, not RageUI.Visible(DepositMotoConcess))
+    while DepositMotoConcess do
+        Citizen.Wait(0)
+            RageUI.IsVisible(DepositMotoConcess, true, true, true, function()
+                for i=1, #inventory.items, 1 do
+                    if inventory ~= nil then
+                         local item = inventory.items[i]
+                            if item.count > 0 then
+                                        RageUI.ButtonWithStyle(item.label, nil, {RightLabel = item.count}, true, function(Hovered, Active, Selected)
+                                            if Selected then
+                                            local count = KeyboardInput("Combien ?", '' , 8)
+                                            TriggerServerEvent('fellow_moto:putStockItems', item.name, tonumber(count))
+                                            ConcessMotoDeposerobjet()
+                                        end
+                                    end)
+                                end
+                            else
+                                RageUI.Separator('Chargement en cours')
+                            end
+                        end
+                    end, function()
+                    end)
+                if not RageUI.Visible(DepositMotoConcess) then
+                DepositMotoConcess = RMenu:DeleteType("DepositMotoConcess", true)
+            end
+        end
+    end)
+end
+
 function MenuConcessMoto()
     local MConcessMoto = RageUI.CreateMenu("Menu", "Concessionnaire Moto")
     local MConcessMotoSub = RageUI.CreateSubMenu(MConcessMoto, "Menu", "Concessionnaire Moto")
