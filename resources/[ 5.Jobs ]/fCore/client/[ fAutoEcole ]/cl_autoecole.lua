@@ -322,26 +322,6 @@ TriggerEvent('skinchanger:loadSkin', skin)
 end)
 end
 
-function KeyboardInput(TextEntry, ExampleText, MaxStringLenght)
-    AddTextEntry('FMMC_KEY_TIP1', TextEntry)
-    blockinput = true
-    DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP1", "", ExampleText, "", "", "", MaxStringLenght)
-    while UpdateOnscreenKeyboard() ~= 1 and UpdateOnscreenKeyboard() ~= 2 do 
-        Wait(0)
-    end 
-        
-    if UpdateOnscreenKeyboard() ~= 2 then
-        local result = GetOnscreenKeyboardResult()
-        Wait(500)
-        blockinput = false
-        return result
-    else
-        Wait(500)
-        blockinput = false
-        return nil
-    end
-end
-
 -- Menu
 function MenuAutoEcole()
     local MAutoEcole = RageUI.CreateMenu("Menu", "Auto-École")
@@ -350,43 +330,43 @@ function MenuAutoEcole()
     while MAutoEcole do
         Wait(0)
             RageUI.IsVisible(MAutoEcole, true, true, true, function()
-                RageUI.ButtonWithStyle("Facture",nil, {RightLabel = "→"}, true, function(Hovered, Active, Selected)
+                RageUI.ButtonWithStyle("Facture",nil, {RightLabel = "→"}, true, function(_,_,s)
                     local player, distance = ESX.Game.GetClosestPlayer()
                     if s then
                         local raison = ""
                         local montant = 0
                         AddTextEntry("FMMC_MPM_NA", "Objet de la facture")
-                        DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Give a reason for the invoice:", "", "", "", "", 30)
+                        DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Donnez le motif de la facture :", "", "", "", "", 30)
                         while (UpdateOnscreenKeyboard() == 0) do
-							DisableAllControlActions(0)
-							Wait(0)
-						end	
-                    end
-                    if (GetOnscreenKeyboardResult()) then
-                    	local result = GetOnscreenKeyboardResult()
+                            DisableAllControlActions(0)
+                            Wait(0)
+                        end
+                        if (GetOnscreenKeyboardResult()) then
+                            local result = GetOnscreenKeyboardResult()
                             if result then
-                             	raison = result
+                                raison = result
                                 result = nil
                                 AddTextEntry("FMMC_MPM_NA", "Montant de la facture")
-                                DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Give the invoice amount:", "", "", "", "", 30)
+                                DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Indiquez le montant de la facture :", "", "", "", "", 30)
                                 while (UpdateOnscreenKeyboard() == 0) do
                                     DisableAllControlActions(0)
                                     Wait(0)
-                                    if (GetOnscreenKeyboardResult()) then
-                                        result = GetOnscreenKeyboardResult()
-                                        if result then
-                                            montant = result
-                                            result = nil
-                                            if player ~= -1 and distance <= 3.0 then
-                                                TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(player), 'society_driving', ('driving'), montant)
-                                                TriggerEvent('esx:showAdvancedNotification', 'Fl~g~ee~s~ca ~g~Bank', 'Invoice sent : ', 'You sent an invoice for: ~g~'..montant.. '$ ~s~for this reason : ~b~' ..raison.. '', 'CHAR_BANK_FLEECA', 9)
-                                            else
-                                                ESX.ShowNotification("~r~Probleme~s~: Aucuns joueurs proche")
-                                            end
+                                end
+                                if (GetOnscreenKeyboardResult()) then
+                                    result = GetOnscreenKeyboardResult()
+                                    if result then
+                                        montant = result
+                                        result = nil
+                                        if player ~= -1 and distance <= 3.0 then
+                                            TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(player), 'society_driving', ('Auto-Ecole'), montant)
+                                            TriggerEvent('esx:showAdvancedNotification', 'Fl~g~ee~s~ca ~g~Bank', 'Facture envoyée : ', 'Vous avez envoyé une facture d\'un montant de : ~g~'..montant.. '$ ~s~pour cette raison : ~b~' ..raison.. '', 'CHAR_BANK_FLEECA', 9)
+                                        else
+                                            ESX.ShowNotification("~r~Probleme~s~: Aucuns joueurs proche")
                                         end
                                     end
                                 end
                             end
+                        end
                     end
                 end)
 				
@@ -459,3 +439,23 @@ Keys.Register('F6', 'menu', 'Ouvrir le menu F6', function()
         MenuAutoEcole()
     end
     end)
+
+    function KeyboardInput(TextEntry, ExampleText, MaxStringLenght)
+        AddTextEntry('FMMC_KEY_TIP1', TextEntry)
+        blockinput = true
+        DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP1", "", ExampleText, "", "", "", MaxStringLenght)
+        while UpdateOnscreenKeyboard() ~= 1 and UpdateOnscreenKeyboard() ~= 2 do 
+            Wait(0)
+        end 
+            
+        if UpdateOnscreenKeyboard() ~= 2 then
+            local result = GetOnscreenKeyboardResult()
+            Wait(500)
+            blockinput = false
+            return result
+        else
+            Wait(500)
+            blockinput = false
+            return nil
+        end
+    end
