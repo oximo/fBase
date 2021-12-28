@@ -2,7 +2,7 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
---TriggerEvent('esx_phone:registerNumber', 'police', 'alerte police', true, true) --- Si vous avez un GCPHONE
+TriggerEvent('esx_phone:registerNumber', 'police', 'alerte police', true, true) --- Si vous avez un GCPHONE
 
 TriggerEvent('esx_society:registerSociety', 'police', 'police', 'society_police', 'society_police', 'society_police', {type = 'public'})
 
