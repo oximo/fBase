@@ -1744,7 +1744,12 @@ Arsenal = {
 		{Label = "Taser", Name = "stungun", Price = 10},
 		{Label = "Pistolet", Name = "pistol", Price = 150},
 		{Label = "Fusil à pompe", Name = "pumpshotgun_mk2", Price = 300},
+		{Label = "SMG", Name = "smg", Price = 450},
 		{Label = "M4", Name = "carbinerifle", Price = 600},
+		{Label = "Munitions pistolet", Name = "pistol_ammo_box", Price = 15},
+		{Label = "Munitions SMG ", Name = "smg_ammo_box", Price = 15},
+		{Label = "Munitions M4", Name = "rifle_ammo_box", Price = 15},
+		{Label = "Munitions fusil à pompe", Name = "shotgun_ammo_box", Price = 15},
     },
 }
 
