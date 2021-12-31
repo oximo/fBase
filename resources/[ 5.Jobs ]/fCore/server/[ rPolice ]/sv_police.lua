@@ -79,7 +79,7 @@ AddEventHandler('rPolice:arsenalvide', function()
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(source)
 	for k,v in pairs(Arsenal.Police) do
-		xPlayer.removeWeapon(v.Name)
+		xPlayer.removeInventoryItem(v.Name, 1)
 	end
 	TriggerClientEvent('esx:showNotification', source, "Vous avez posé tous vos armes")
 end)
