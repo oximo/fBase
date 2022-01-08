@@ -2,7 +2,7 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
---TriggerEvent('esx_phone:registerNumber', 'mafia', 'alerte mafia', true, true)
+TriggerEvent('esx_phone:registerNumber', 'mafia', 'alerte mafia', true, true)
 
 TriggerEvent('esx_society:registerSociety', 'mafia', 'mafia', 'society_mafia', 'society_mafia', 'society_mafia', {type = 'public'})
 
