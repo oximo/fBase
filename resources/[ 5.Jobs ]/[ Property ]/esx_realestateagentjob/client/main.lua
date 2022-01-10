@@ -543,7 +543,7 @@ function MenuF6Immo()
                 end, function() 
                 end)
                 if not RageUI.Visible(rImmoF6) then
-                    rImmoF6 = RMenu:DeleteType("Ammu-Nation", true)
+                    rImmoF6 = RMenu:DeleteType("Agent-Immo", true)
         end
     end
 end
