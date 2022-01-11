@@ -204,7 +204,7 @@ end
 
 function OpenManageEmployeesMenu2(society)
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'manage_employees_' .. society, {
-		title    = _U('secondary_employee_management'),
+		title    = _U('employee_management2'),
 		align    = 'top-left',
 		elements = {
 			{label = _U('employee_list'), value = 'employee_list'},
