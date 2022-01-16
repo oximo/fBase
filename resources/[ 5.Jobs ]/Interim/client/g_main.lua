@@ -156,6 +156,7 @@ function Trajet()
                         Notif("~g~Très bon travail, dirige-toi vers le mécano pour vendre la ferraille.")
                         SetStateWaypoint = false
                         inWork = false
+			state = 0
                         RemoveBlip(blip)
                     end
                 end
