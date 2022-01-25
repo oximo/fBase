@@ -119,7 +119,7 @@ end)
 RegisterServerEvent("fAdmin:bring")
 AddEventHandler("fAdmin:bring",function(IdDuMec, plyPedCoords, lequel)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if xPlayer.getGroup() == "mod" or xPlayer.getGroup() == "admin" or xPlayer.getGroup() == "superadmin" then
+    if xPlayer.getGroup() == "help" or xPlayer.getGroup() == "mod" or xPlayer.getGroup() == "admin" then
         if lequel == "bring" then
             TriggerClientEvent("fAdmin:bring", IdDuMec, plyPedCoords)
         else
@@ -135,330 +135,337 @@ AddEventHandler("fAdmin:Message", function(id, type)
     TriggerClientEvent("fAdmin:envoyer", id, type)
 end)
 
---BAN/Warn
-local bancache,namecache = {},{}
-local open_assists,active_assists = {},{}
+-- Ban
 
-function split(s, delimiter)result = {};for match in (s..delimiter):gmatch("(.-)"..delimiter) do table.insert(result, match) end return result end
+Text               = {}
+BanList            = {}
+BanListLoad        = false
+BanListHistory     = {}
+BanListHistoryLoad = false
+Text = Config.TextFr
 
-Citizen.CreateThread(function() -- startup
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-    while ESX==nil do Wait(0) end
-    
-    MySQL.ready(function()
-        refreshNameCache()
-        refreshBanCache()
-    end)
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-    sendToDiscord("fAdmin has been started...")
 
-    ESX.RegisterServerCallback("fAdmin:ban", function(source,cb,target,reason,length,offline)
-        if not target or not reason then return end
-        local xPlayer = ESX.GetPlayerFromId(source)
-        local xTarget = ESX.GetPlayerFromId(target)
-        if not xPlayer or (not xTarget and not offline) then cb(nil); return end
-        if isAdmin(xPlayer) then
-            local success, reason = banPlayer(xPlayer,offline and target or xTarget,reason,length,offline)
-            cb(success, reason)
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-
-    ESX.RegisterServerCallback("fAdmin:warn",function(source,cb,target,message,anon)
-        if not target or not message then return end
-        local xPlayer = ESX.GetPlayerFromId(source)
-        local xTarget = ESX.GetPlayerFromId(target)
-        if not xPlayer or not xTarget then cb(nil); return end
-        if isAdmin(xPlayer) then
-            warnPlayer(xPlayer,xTarget,message,anon)
-            cb(true)
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-
-    ESX.RegisterServerCallback("fAdmin:getWarnList",function(source,cb)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if isAdmin(xPlayer) then
-            local warnlist = {}
-            for k,v in ipairs(MySQL.Sync.fetchAll("SELECT * FROM bwh_warnings LIMIT @limit",{["@limit"]=Config.page_element_limit})) do
-                v.receiver_name=namecache[v.receiver]
-                v.sender_name=namecache[v.sender]
-                table.insert(warnlist,v)
-            end
-            cb(json.encode(warnlist),MySQL.Sync.fetchScalar("SELECT CEIL(COUNT(id)/@limit) FROM bwh_warnings",{["@limit"]=Config.page_element_limit}))
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-
-    ESX.RegisterServerCallback("fAdmin:getBanList",function(source,cb)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if isAdmin(xPlayer) then
-            local data = MySQL.Sync.fetchAll("SELECT * FROM bwh_bans LIMIT @limit",{["@limit"]=Config.page_element_limit})
-            local banlist = {}
-            for k,v in ipairs(data) do
-                v.receiver_name = namecache[json.decode(v.receiver)[1]]
-                v.sender_name = namecache[v.sender]
-                table.insert(banlist,v)
-            end
-            cb(json.encode(banlist),MySQL.Sync.fetchScalar("SELECT CEIL(COUNT(id)/@limit) FROM bwh_bans",{["@limit"]=Config.page_element_limit}))
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-
-    ESX.RegisterServerCallback("fAdmin:getListData",function(source,cb,list,page)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if isAdmin(xPlayer) then
-            if list=="banlist" then
-                local banlist = {}
-                for k,v in ipairs(MySQL.Sync.fetchAll("SELECT * FROM bwh_bans LIMIT @limit OFFSET @offset",{["@limit"]=Config.page_element_limit,["@offset"]=Config.page_element_limit*(page-1)})) do
-                    v.receiver_name = namecache[json.decode(v.receiver)[1]]
-                    v.sender_name = namecache[v.sender]
-                    table.insert(banlist,v)
-                end
-                cb(json.encode(banlist))
-            else
-                local warnlist = {}
-                for k,v in ipairs(MySQL.Sync.fetchAll("SELECT * FROM bwh_warnings LIMIT @limit OFFSET @offset",{["@limit"]=Config.page_element_limit,["@offset"]=Config.page_element_limit*(page-1)})) do
-                    v.sender_name=namecache[v.sender]
-                    v.receiver_name=namecache[v.receiver]
-                    table.insert(warnlist,v)
-                end
-                cb(json.encode(warnlist))
-            end
-        else logUnfairUse(xPlayer); cb(nil) end
-    end)
-
-    ESX.RegisterServerCallback("fAdmin:unban",function(source,cb,id)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if isAdmin(xPlayer) then
-            MySQL.Async.execute("UPDATE bwh_bans SET unbanned=1 WHERE id=@id",{["@id"]=id},function(rc)
-                local bannedidentifier = "N/A"
-                for k,v in ipairs(bancache) do
-                    if v.id==id then
-                        bannedidentifier = v.receiver[1]
-                        bancache[k].unbanned = true
-                        break
-                    end
-                end
-                logAdmin(("Admin ^1%s^7 unbanned ^1%s^7 (%s)"):format(xPlayer.getName(),(bannedidentifier~="N/A" and namecache[bannedidentifier]) and namecache[bannedidentifier] or "N/A",bannedidentifier))
-                cb(rc>0)
-            end)
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-    ESX.RegisterServerCallback("fAdmin:getIndexedPlayerList",function(source,cb)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if isAdmin(xPlayer) then
-        	local players = {}
-        	for k,v in ipairs(ESX.GetPlayers()) do
-        		players[tostring(v)]=GetPlayerName(v)..(v==source and " (self)" or "")
-        	end
-        	cb(json.encode(players))
-        else logUnfairUse(xPlayer); cb(false) end
-    end)
-end)
-
-RegisterServerEvent('fAdmin:backupcheck')
-AddEventHandler('fAdmin:backupcheck', function()
-    local identifiers = GetPlayerIdentifiers(source)
-    local banned = isBanned(identifiers)
-    if banned then
-        DropPlayer(source, "Ban bypass detected, don’t join back!")
-    end
-end)
-
-AddEventHandler("playerConnecting",function(name, setKick, def)
-    local identifiers = GetPlayerIdentifiers(source)
-    if #identifiers>0 and identifiers[1]~=nil then
-        local banned, data = isBanned(identifiers)
-        namecache[identifiers[1]]=GetPlayerName(source)
-        if banned then
-            print(("[^1"..GetCurrentResourceName().."^7] Banned player %s (%s) tried to join, their ban expires on %s (Ban ID: #%s)"):format(GetPlayerName(source),data.receiver[1],data.length and os.date("%Y-%m-%d %H:%M",data.length) or "PERMANENT",data.id))
-            local kickmsg = Config.banformat:format(data.reason,data.length and os.date("%Y-%m-%d %H:%M",data.length) or "PERMANENT",data.sender_name,data.id)
-            if Config.backup_kick_method then DropPlayer(source,kickmsg) else def.done(kickmsg) end
-        else
-            local playername = GetPlayerName(source)
-            local saneplayername = "Adjusted Playername"
-            if string.gsub(playername, "[^a-zA-Z0-9]", "") ~= "" then
-                saneplayername = string.gsub(playername, "[^a-zA-Z0-9 ]", "")
-            end
-            local data = {["@name"]=saneplayername}
-            for k,v in ipairs(identifiers) do
-                data["@"..split(v,":")[1]]=v
-            end
-            if not data["@steam"] then
-	        if Config.kick_without_steam then
-		    print("[^1"..GetCurrentResourceName().."^7] Player connecting without steamid, removing player from server.")
-		    def.done("You need to have steam open to play on this server.")
-		else
-                    print("[^1"..GetCurrentResourceName().."^7] Player connecting without steamid, skipping identifier storage.")
+CreateThread(function()
+	while true do
+		Wait(1000)
+        if BanListLoad == false then
+			loadBanList()
+			if BanList ~= {} then
+				print("Passage sous New ESX By Yamsoo.")
+				print(Text.banlistloaded)
+				BanListLoad = true
+			else
+				print(Text.starterror)
+			end
 		end
-            else
-                MySQL.Async.execute("INSERT INTO `bwh_identifiers` (`steam`, `license`, `ip`, `name`, `xbl`, `live`, `discord`, `fivem`) VALUES (@steam, @license, @ip, @name, @xbl, @live, @discord, @fivem) ON DUPLICATE KEY UPDATE `license`=@license, `ip`=@ip, `name`=@name, `xbl`=@xbl, `live`=@live, `discord`=@discord, `fivem`=@fivem",data)
-            end
-        end
-    else
-        if Config.backup_kick_method then DropPlayer(source,"[BWH] No identifiers were found when connecting, please reconnect") else def.done("[BWH] No identifiers were found when connecting, please reconnect") end
-    end
+		if BanListHistoryLoad == false then
+			loadBanListHistory()
+            if BanListHistory ~= {} then
+				print(Text.historyloaded)
+				BanListHistoryLoad = true
+			else
+				print(Text.starterror)
+			end
+		end
+	end
 end)
 
-AddEventHandler("playerDropped",function(reason)
-    if open_assists[source] then open_assists[source]=nil end
-    for k,v in ipairs(active_assists) do
-        if v==source then
-            active_assists[k]=nil
-            TriggerClientEvent("chat:addMessage",k,{color={255,0,0},multiline=false,args={"BWH","The admin that was helping you dropped from the server"}})
-            return
-        elseif k==source then
-            TriggerClientEvent("fAdmin:assistDone",v)
-            TriggerClientEvent("chat:addMessage",v,{color={255,0,0},multiline=false,args={"BWH","The player you were helping dropped from the server, teleporting back..."}})
-            active_assists[k]=nil
-            return
-        end
-    end
+CreateThread(function()
+	while Config.MultiServerSync do
+		Wait(30000)
+		MySQL.Async.fetchAll(
+		'SELECT * FROM banlist',
+		{},
+		function (data)
+			if #data ~= #BanList then
+			  BanList = {}
+
+			  for i=1, #data, 1 do
+				table.insert(BanList, {
+					license    = data[i].license,
+					identifier = data[i].identifier,
+					liveid     = data[i].liveid,
+					xblid      = data[i].xblid,
+					discord    = data[i].discord,
+					playerip   = data[i].playerip,
+					reason     = data[i].reason,
+					added      = data[i].added,
+					expiration = data[i].expiration,
+					permanent  = data[i].permanent
+				  })
+			  end
+			loadBanListHistory()
+			TriggerClientEvent('BanSql:Respond', -1)
+			end
+		end
+		)
+	end
 end)
 
-function refreshNameCache()
-    namecache={}
-    for k,v in ipairs(MySQL.Sync.fetchAll("SELECT steam,name FROM bwh_identifiers")) do
-        namecache[v.steam]=v.name
-    end
-end
 
-function refreshBanCache()
-    bancache={}
-    for k,v in ipairs(MySQL.Sync.fetchAll("SELECT id,receiver,sender,reason,UNIX_TIMESTAMP(length) AS length,unbanned FROM bwh_bans")) do
-        table.insert(bancache,{id=v.id,sender=v.sender,sender_name=namecache[v.sender]~=nil and namecache[v.sender] or "N/A",receiver=json.decode(v.receiver),reason=v.reason,length=v.length,unbanned=v.unbanned==1})
-    end
-end
+ESX.RegisterCommand('sqlban', Config.Permission, function(source, args, user)
+	cmdban(source, args)
+end, true)
 
-function sendToDiscord(msg)
-    if fAdmin.webhooks ~= "" then
-        PerformHttpRequest(fAdmin.webhooks, function(a,b,c)end, "POST", json.encode({embeds={{title="BWH Action Log",description=msg:gsub("%^%d",""),color=65280,}}}), {["Content-Type"]="application/json"})
-    end
-end
+ESX.RegisterCommand('sqlunban', Config.Permission, function(source, args, user)
+	cmdunban(source, args)
+end, true)
 
-function logAdmin(msg)
-    for k,v in ipairs(ESX.GetPlayers()) do
-        if isAdmin(ESX.GetPlayerFromId(v)) then
-            TriggerClientEvent("chat:addMessage",v,{color={255,0,0},multiline=false,args={"BWH",msg}})
-            sendToDiscord(msg)
-        end
-    end
-end
+ESX.RegisterCommand('sqlbanoffline', Config.Permission, function(source, args, user)
+	cmdbanoffline(source, args)
+end, true)
 
-function isBanned(identifiers)
-    for _,ban in ipairs(bancache) do
-        if not ban.unbanned and (ban.length==nil or ban.length>os.time()) then
-            for _,bid in ipairs(ban.receiver) do
-                if bid:find("ip:") and Config.ip_ban then
-                    for _,pid in ipairs(identifiers) do
-                        if bid==pid then return true, ban end
-                    end
-                end
-            end
-        end
-    end
-    return false, nil
-end
+ESX.RegisterCommand('sqlbanhistory', Config.Permission, function(source, args, user)
+	cmdbanhistory(source, args)
+end, true)
 
-function isAdmin(xPlayer)
-    for k,v in ipairs(Config.admin_groups) do
-        if xPlayer.getGroup()==v then return true end
-    end
-    return false
-end
+ESX.RegisterCommand('sqlbanreload', Config.Permission, function(source, args, user)
+	BanListLoad        = false
+	BanListHistoryLoad = false
+	Wait(5000)
+	if BanListLoad == true then
+	  TriggerEvent('bansql:sendMessage', source, Text.banlistloaded)
+	  if BanListHistoryLoad == true then
+		  TriggerEvent('bansql:sendMessage', source, Text.historyloaded)
+	  end
+	else
+	  TriggerEvent('bansql:sendMessage', source, Text.loaderror)
+	end
+end, true)
 
-function execOnAdmins(func)
-    local ac = 0
-    for k,v in ipairs(ESX.GetPlayers()) do
-        if isAdmin(ESX.GetPlayerFromId(v)) then
-            ac = ac + 1
-            func(v)
-        end
-    end
-    return ac
-end
 
-function logUnfairUse(xPlayer)
-    if not xPlayer then return end
-    print(("[^1"..GetCurrentResourceName().."^7] Player %s (%s) tried to use an admin feature"):format(xPlayer.getName(),xPlayer.identifier))
-    logAdmin(("Player %s (%s) tried to use an admin feature"):format(xPlayer.getName(),xPlayer.identifier))
-end
+--TriggerEvent('es:addGroupCommand', 'sqlsearch', Config.Permission, function (source, args, user)
+--	cmdsearch(source, args)
+--end, function(source, args, user)
+--	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM ', 'Insufficient Permissions.' } })
+--end, {help = Text.bansearch, params = {{name = "name", help = Text.steamname}}})
 
-function banPlayer(xPlayer,xTarget,reason,length,offline)
-    local targetidentifiers,offlinename,timestring,data = {},nil,nil,nil
-    if offline then
-        data = MySQL.Sync.fetchAll("SELECT * FROM bwh_identifiers WHERE steam=@identifier",{["@identifier"]=xTarget})
-        if #data<1 then
-            return false, "~r~Identifier is not in identifiers database!"
-        end
-        offlinename = data[1].name
-        for k,v in pairs(data[1]) do
-            if k~="name" then table.insert(targetidentifiers,v) end
-        end
-    else
-        targetidentifiers = GetPlayerIdentifiers(xTarget.source)
-    end
-    if length=="" then length = nil end
-    MySQL.Async.execute("INSERT INTO bwh_bans(id,receiver,sender,length,reason) VALUES(NULL,@receiver,@sender,@length,@reason)",{["@receiver"]=json.encode(targetidentifiers),["@sender"]=xPlayer.identifier,["@length"]=length,["@reason"]=reason},function(_)
-        local banid = MySQL.Sync.fetchScalar("SELECT MAX(id) FROM bwh_bans")
-        logAdmin(("Player ^1%s^7 (%s) got banned by ^1%s^7, expiration: %s, reason: '%s'"..(offline and " (OFFLINE BAN)" or "")):format(offline and offlinename or xTarget.getName(),offline and data[1].steam or xTarget.identifier,xPlayer.getName(),length~=nil and length or "PERMANENT",reason))
-        if length~=nil then
-            timestring=length
-            local year,month,day,hour,minute = string.match(length,"(%d+)/(%d+)/(%d+) (%d+):(%d+)")
-            length = os.time({year=year,month=month,day=day,hour=hour,min=minute})
-        end
-        table.insert(bancache,{id=banid==nil and "1" or banid,sender=xPlayer.identifier,reason=reason,sender_name=xPlayer.getName(),receiver=targetidentifiers,length=length})
-        if offline then xTarget = ESX.GetPlayerFromIdentifier(xTarget) end -- just in case the player is on the server, you never know
-        if xTarget then
-            TriggerClientEvent("fAdmin:gotBanned",xTarget.source, reason)
-            Citizen.SetTimeout(5000, function()
-                DropPlayer(xTarget.source,Config.banformat:format(reason,length~=nil and timestring or "PERMANENT",xPlayer.getName(),banid==nil and "1" or banid))
-            end)
-        else return false, "~r~Unknown error (MySQL?)" end
-        return true, ""
-    end)
-end
 
-function warnPlayer(xPlayer,xTarget,message,anon)
-    MySQL.Async.execute("INSERT INTO bwh_warnings(id,receiver,sender,message) VALUES(NULL,@receiver,@sender,@message)",{["@receiver"]=xTarget.identifier,["@sender"]=xPlayer.identifier,["@message"]=message})
-    TriggerClientEvent("fAdmin:receiveWarn",xTarget.source,anon and "" or xPlayer.getName(),message)
-    logAdmin(("Admin ^1%s^7 warned ^1%s^7 (%s), Message: '%s'"):format(xPlayer.getName(),xTarget.getName(),xTarget.identifier,message))
-end
+--TriggerEvent('es:addGroupCommand', 'sqlbanhistory', Config.Permission, function (source, args, user)
+--	cmdbanhistory(source, args)
+--end, function(source, args, user)
+--	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM ', 'Insufficient Permissions.' } })
+--end, {help = Text.history, params = {{name = "name", help = Text.steamname}, }})
 
-AddEventHandler("fAdmin:ban",function(sender,target,reason,length,offline)
-    if source=="" then -- if it's from server only
-        banPlayer(sender,target,reason,length,offline)
-    end
+
+--How to use from server side : TriggerEvent("BanSql:ICheat", "Auto-Cheat Custom Reason",TargetId)
+RegisterServerEvent('BanSql:ICheat')
+AddEventHandler('BanSql:ICheat', function(reason,servertarget)
+	local license,identifier,liveid,xblid,discord,playerip,target
+	local duree     = 0
+	local reason    = reason
+
+	if not reason then reason = "Pffff t cramé mon reuf..." end
+
+	if tostring(source) == "" then
+		target = tonumber(servertarget)
+	else
+		target = source
+	end
+
+	if target and target > 0 then
+		local ping = GetPlayerPing(target)
+	
+		if ping and ping > 0 then
+			if duree and duree < 365 then
+				local sourceplayername = "Anti-Cheat-System"
+				local targetplayername = GetPlayerName(target)
+					for k,v in ipairs(GetPlayerIdentifiers(target))do
+						if string.sub(v, 1, string.len("license:")) == "license:" then
+							license = v
+						elseif string.sub(v, 1, string.len("steam:")) == "steam:" then
+							identifier = v
+						elseif string.sub(v, 1, string.len("live:")) == "live:" then
+							liveid = v
+						elseif string.sub(v, 1, string.len("xbl:")) == "xbl:" then
+							xblid  = v
+						elseif string.sub(v, 1, string.len("discord:")) == "discord:" then
+							discord = v
+						elseif string.sub(v, 1, string.len("ip:")) == "ip:" then
+							playerip = v
+						end
+					end
+			
+				if duree > 0 then
+					ban(target,license,identifier,liveid,xblid,discord,playerip,targetplayername,sourceplayername,duree,reason,0) --Timed ban here
+					DropPlayer(target, Text.yourban .. reason)
+				else
+					ban(target,license,identifier,liveid,xblid,discord,playerip,targetplayername,sourceplayername,duree,reason,1) --Perm ban here
+					DropPlayer(target, Text.yourpermban .. reason)
+				end
+			
+			else
+				print("BanSql Error : Auto-Cheat-Ban time invalid.")
+			end	
+		else
+			print("BanSql Error : Auto-Cheat-Ban target are not online.")
+		end
+	else
+		print("BanSql Error : Auto-Cheat-Ban have recive invalid id.")
+	end
 end)
 
-AddEventHandler("fAdmin:warn",function(sender,target,message,anon)
-    if source=="" then -- if it's from server only
-        warnPlayer(sender,target,message,anon)
-    end
+RegisterServerEvent('BanSql:CheckMe')
+AddEventHandler('BanSql:CheckMe', function()
+	doublecheck(source)
 end)
 
-RegisterCommand("bwh", function(source, args, rawCommand)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    if isAdmin(xPlayer) then
-        if args[1]=="ban" or args[1]=="warn" or args[1]=="warnlist" or args[1]=="banlist" then
-            TriggerClientEvent("fAdmin:showWindow",source,args[1])
-        elseif args[1]=="refresh" then
-            TriggerClientEvent("chat:addMessage",source,{color={0,255,0},multiline=false,args={"BWH","Refreshing ban & name cache..."}})
-            refreshNameCache()
-            refreshBanCache()
-        elseif args[1]=="assists" then
-            local openassistsmsg,activeassistsmsg = "",""
-            for k,v in pairs(open_assists) do
-                openassistsmsg=openassistsmsg.."^5ID "..k.." ("..GetPlayerName(k)..")^7 - "..v.."\n"
-            end
-            for k,v in pairs(active_assists) do
-                activeassistsmsg=activeassistsmsg.."^5ID "..k.." ("..GetPlayerName(k)..")^7 - "..v.." ("..GetPlayerName(v)..")\n"
-            end
-            TriggerClientEvent("chat:addMessage",source,{color={0,255,0},multiline=true,args={"BWH","Pending assists:\n"..(openassistsmsg~="" and openassistsmsg or "^1No pending assists")}})
-            TriggerClientEvent("chat:addMessage",source,{color={0,255,0},multiline=true,args={"BWH","Active assists:\n"..(activeassistsmsg~="" and activeassistsmsg or "^1No active assists")}})
-        else
-            TriggerClientEvent("chat:addMessage",source,{color={255,0,0},multiline=false,args={"BWH","Invalid sub-command! (^4ban^7,^4warn^7,^4banlist^7,^4warnlist^7,^4refresh^7)"}})
-        end
-    else
-        TriggerClientEvent("chat:addMessage",source,{color={255,0,0},multiline=false,args={"BWH","You don't have permissions to use this command!"}})
+-- console / rcon can also utilize es:command events, but breaks since the source isn't a connected player, ending up in error messages
+AddEventHandler('bansql:sendMessage', function(source, message)
+	print('[New Version] SqlBan: ' .. message)
+end)
+
+AddEventHandler('playerConnecting', function (playerName,setKickReason)
+	local license,steamID,liveid,xblid,discord,playerip  = "n/a","n/a","n/a","n/a","n/a","n/a"
+
+	for k,v in ipairs(GetPlayerIdentifiers(source))do
+		if string.sub(v, 1, string.len("license:")) == "license:" then
+			license = v
+		elseif string.sub(v, 1, string.len("steam:")) == "steam:" then
+			steamID = v
+		elseif string.sub(v, 1, string.len("live:")) == "live:" then
+			liveid = v
+		elseif string.sub(v, 1, string.len("xbl:")) == "xbl:" then
+			xblid  = v
+		elseif string.sub(v, 1, string.len("discord:")) == "discord:" then
+			discord = v
+		elseif string.sub(v, 1, string.len("ip:")) == "ip:" then
+			playerip = v
+		end
+	end
+
+	--Si Banlist pas chargée
+	if (Banlist == {}) then
+		Citizen.Wait(1000)
+	end
+
+    if steamID == "n/a" and Config.ForceSteam then
+		setKickReason(Text.invalidsteam)
+		CancelEvent()
     end
+
+	for i = 1, #BanList, 1 do
+		if 
+			  ((tostring(BanList[i].license)) == tostring(license) 
+			or (tostring(BanList[i].identifier)) == tostring(steamID) 
+			or (tostring(BanList[i].liveid)) == tostring(liveid) 
+			or (tostring(BanList[i].xblid)) == tostring(xblid) 
+			or (tostring(BanList[i].discord)) == tostring(discord) 
+			or (tostring(BanList[i].playerip)) == tostring(playerip)) 
+		then
+
+			if (tonumber(BanList[i].permanent)) == 1 then
+
+				setKickReason(Text.yourpermban .. BanList[i].reason)
+				CancelEvent()
+				break
+
+			elseif (tonumber(BanList[i].expiration)) > os.time() then
+
+				local tempsrestant     = (((tonumber(BanList[i].expiration)) - os.time())/60)
+				if tempsrestant >= 1440 then
+					local day        = (tempsrestant / 60) / 24
+					local hrs        = (day - math.floor(day)) * 24
+					local minutes    = (hrs - math.floor(hrs)) * 60
+					local txtday     = math.floor(day)
+					local txthrs     = math.floor(hrs)
+					local txtminutes = math.ceil(minutes)
+						setKickReason(Text.yourban .. BanList[i].reason .. Text.timeleft .. txtday .. Text.day ..txthrs .. Text.hour ..txtminutes .. Text.minute)
+						CancelEvent()
+						break
+				elseif tempsrestant >= 60 and tempsrestant < 1440 then
+					local day        = (tempsrestant / 60) / 24
+					local hrs        = tempsrestant / 60
+					local minutes    = (hrs - math.floor(hrs)) * 60
+					local txtday     = math.floor(day)
+					local txthrs     = math.floor(hrs)
+					local txtminutes = math.ceil(minutes)
+						setKickReason(Text.yourban .. BanList[i].reason .. Text.timeleft .. txtday .. Text.day .. txthrs .. Text.hour .. txtminutes .. Text.minute)
+						CancelEvent()
+						break
+				elseif tempsrestant < 60 then
+					local txtday     = 0
+					local txthrs     = 0
+					local txtminutes = math.ceil(tempsrestant)
+						setKickReason(Text.yourban .. BanList[i].reason .. Text.timeleft .. txtday .. Text.day .. txthrs .. Text.hour .. txtminutes .. Text.minute)
+						CancelEvent()
+						break
+				end
+
+			elseif (tonumber(BanList[i].expiration)) < os.time() and (tonumber(BanList[i].permanent)) == 0 then
+
+				deletebanned(license)
+				break
+			end
+		end
+	end
+end)
+
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+	CreateThread(function()
+	Wait(5000)
+		local license,steamID,liveid,xblid,discord,playerip
+		local playername = GetPlayerName(xPlayer)
+
+		for k,v in ipairs(GetPlayerIdentifiers(xPlayer))do
+			if string.sub(v, 1, string.len("license:")) == "license:" then
+				license = v
+			elseif string.sub(v, 1, string.len("steam:")) == "steam:" then
+				steamID = v
+			elseif string.sub(v, 1, string.len("live:")) == "live:" then
+				liveid = v
+			elseif string.sub(v, 1, string.len("xbl:")) == "xbl:" then
+				xblid  = v
+			elseif string.sub(v, 1, string.len("discord:")) == "discord:" then
+				discord = v
+			elseif string.sub(v, 1, string.len("ip:")) == "ip:" then
+				playerip = v
+			end
+		end
+
+		MySQL.Async.fetchAll('SELECT * FROM `baninfo` WHERE `license` = @license', {
+			['@license'] = license
+		}, function(data)
+		local found = false
+			for i=1, #data, 1 do
+				if data[i].license == license then
+					found = true
+				end
+			end
+			if not found then
+				MySQL.Async.execute('INSERT INTO baninfo (license,identifier,liveid,xblid,discord,playerip,playername) VALUES (@license,@identifier,@liveid,@xblid,@discord,@playerip,@playername)', 
+					{ 
+					['@license']    = license,
+					['@identifier'] = steamID,
+					['@liveid']     = liveid,
+					['@xblid']      = xblid,
+					['@discord']    = discord,
+					['@playerip']   = playerip,
+					['@playername'] = playername
+					},
+					function ()
+				end)
+			else
+				MySQL.Async.execute('UPDATE `baninfo` SET `identifier` = @identifier, `liveid` = @liveid, `xblid` = @xblid, `discord` = @discord, `playerip` = @playerip, `playername` = @playername WHERE `license` = @license', 
+					{ 
+					['@license']    = license,
+					['@identifier'] = steamID,
+					['@liveid']     = liveid,
+					['@xblid']      = xblid,
+					['@discord']    = discord,
+					['@playerip']   = playerip,
+					['@playername'] = playername
+					},
+					function ()
+				end)
+			end
+		end)
+		if Config.MultiServerSync then
+			doublecheck(xPlayer)
+		end
+	end)
 end)
 
 -- Wipe
