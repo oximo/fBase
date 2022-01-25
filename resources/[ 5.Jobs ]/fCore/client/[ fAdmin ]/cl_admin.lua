@@ -1,3 +1,19 @@
+--[[ 
+	
+Ajouter admin, mod ou help
+
+if playergroup == "admin" then
+		LE BUTTON
+end
+
+Si tu veut ajouter plusieurs group
+
+if playergroup == "admin" or playergroup == "mod" then
+		LE BUTTON
+end
+
+]]
+
 ESX = nil
 
 Citizen.CreateThread(function()
@@ -28,6 +44,7 @@ local pos_before_assist,assisting,assist_target,last_assist,IsFirstSpawn = nil, 
 local grade = "inconnu"
 local onlinePlayers = GetNumberOfPlayers()
 local gamerTags = {}
+local spectating = false
 
 Citizen.CreateThread(function()
     while true do
@@ -107,13 +124,13 @@ RegisterNetEvent("fAdmin:Open/CloseReport")
 AddEventHandler("fAdmin:Open/CloseReport", function(type, nomdumec, raisondumec)
     if type == 1 then
         ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-            if group == 'superadmin' or group == 'admin' or group == 'mod' then
+            if group == 'admin' or group == 'mod' or group == 'help' then
                 ESX.ShowNotification('Un nouveau report à été effectué !')
             end
         end)
     elseif type == 2 then
         ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-            if group == 'superadmin' or group == 'admin' or group == 'mod' then
+            if group == 'admin' or group == 'mod' or group == 'help' then
                 ESX.ShowNotification('Le report de ~b~'..nomdumec..'~s~ à été fermé !')
             end
         end)
@@ -182,6 +199,15 @@ function fAdminMenu()
 	if playergroup == "admin" then
 		grade = "Administrateur"
 	end
+
+	if playergroup == "mod" then
+		grade = "Modérateur"
+	end
+
+	if playergroup == "help" then
+		grade = "Helpeur"
+	end
+
     RageUI.Visible(fAdmin, not RageUI.Visible(fAdmin))
     while fAdmin do
         Wait(0)
@@ -207,12 +233,15 @@ function fAdminMenu()
                 RageUI.ButtonWithStyle("Actions sur les joueurs", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
                 end, fAdminJoueurs)
 
-				RageUI.ButtonWithStyle("Actions sur le serveur", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
-                end, fAdminActionsServeur)
+				if playergroup == "admin" then
+					RageUI.ButtonWithStyle("Actions sur le serveur", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
+					end, fAdminActionsServeur)
+				end
 
-
-                RageUI.ButtonWithStyle("Changer de personnage", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
-                end, fAdminPed)
+				if playergroup == "admin" then
+					RageUI.ButtonWithStyle("Changer de personnage", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
+					end, fAdminPed)
+				end
 
 				RageUI.ButtonWithStyle("Teleportation", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
                 end, fAdminTeleport)
@@ -253,8 +282,10 @@ function fAdminMenu()
                     end   
                 end)
 
-                RageUI.ButtonWithStyle("Give", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
-                end, fAdminGive)
+				if playergroup == "admin" then
+					RageUI.ButtonWithStyle("Give", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
+					end, fAdminGive)
+				end
 
 				RageUI.Checkbox("Afficher id + noms", description, affichername,{},function(Hovered,Ative,Selected,Checked)
 					if Selected then
@@ -332,20 +363,6 @@ function fAdminMenu()
 						end
 					end)
 
-
-				RageUI.ButtonWithStyle("Liste des warn", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
-					if (Selected) then
-						ExecuteCommand("bwh warnlist")
-						RageUI.CloseAll()
-					end
-				end)
-
-				RageUI.ButtonWithStyle("Liste des ban", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
-					if (Selected) then
-						ExecuteCommand("bwh banlist")
-						RageUI.CloseAll()
-					end
-				end)
 
 				RageUI.ButtonWithStyle("Gestion temps", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
                 end, fAdminTemps)
@@ -428,6 +445,13 @@ function fAdminMenu()
                 RageUI.IsVisible(fAdminOptions, true, true, true, function()
 
                     RageUI.Separator("↓ Intéraction possible sur ~y~"..GetPlayerName(GetPlayerFromServerId(IdSelected)).. "~s~ ↓", nil, {}, true, function(_, _, _)
+					end)
+
+					RageUI.ButtonWithStyle("Spectate", nil, {}, true, function(Hovered, Active, Selected)
+						if (Selected) then
+						local playerId = GetPlayerFromServerId(IdSelected)
+                            SpectatePlayer(GetPlayerPed(playerId),playerId,GetPlayerName(playerId))
+						end
 					end)
 					
                     RageUI.ButtonWithStyle("Envoyer un message", nil, {RightLabel = nil}, true, function(Hovered, Active, Selected)
@@ -525,18 +549,20 @@ function fAdminMenu()
 							end      
 						end)
 
-                    RageUI.ButtonWithStyle("Give un item/arme", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
-                        if (Selected) then
-                            local item = fAdminKeyboardInput("Item oú arme", "", 10)
-                            local amount = fAdminKeyboardInput("Nombre", "", 10)
-                            if item and amount then
-                                ExecuteCommand("giveitem "..IdSelected.. " " ..item.. " " ..amount)
-                                ESX.ShowNotification("Vous venez de donner ~g~"..amount.. " " .. item .. " ~w~à ".. GetPlayerName(GetPlayerFromServerId(IdSelected)) .."~y~ !")	
-                            else
-                                RageUI.CloseAll()	
-                            end			
-                        end
-                    end)
+					if playergroup == "admin" then
+						RageUI.ButtonWithStyle("Give un item/arme", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
+							if (Selected) then
+								local item = fAdminKeyboardInput("Item oú arme", "", 10)
+								local amount = fAdminKeyboardInput("Nombre", "", 10)
+								if item and amount then
+									ExecuteCommand("giveitem "..IdSelected.. " " ..item.. " " ..amount)
+									ESX.ShowNotification("Vous venez de donner ~g~"..amount.. " " .. item .. " ~w~à ".. GetPlayerName(GetPlayerFromServerId(IdSelected)) .."~y~ !")	
+								else
+									RageUI.CloseAll()	
+								end			
+							end
+						end)
+					end
 
 					RageUI.ButtonWithStyle("Wipe l'inventaire", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
 						if (Selected) then
@@ -559,14 +585,6 @@ function fAdminMenu()
                             end
                         end
                     end)
-
-
-                    RageUI.ButtonWithStyle("~r~Prévenir ~s~le joueur", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
-						if (Selected) then
-							ExecuteCommand("bwh warn")
-                            RageUI.CloseAll()
-						end
-					end)
 
 					RageUI.ButtonWithStyle("~b~Wipe ~s~le joueur", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
 						if (Selected) then
@@ -593,8 +611,12 @@ function fAdminMenu()
 
                     RageUI.ButtonWithStyle("~r~Ban ~s~le joueur", nil, {RightLabel =  "→"}, true, function(Hovered, Active, Selected)
 						if (Selected) then
-							ExecuteCommand("bwh ban")
-                            RageUI.CloseAll()
+							if IdSelected then
+								local time = fAdminKeyboardInput("Temps de ban", "", 10)
+                            	local raison = fAdminKeyboardInput("Raison de ban", "", 10)
+								ExecuteCommand("sqlban "..IdSelected.. " " ..time.. " " ..raison)
+                            	RageUI.CloseAll()
+							end
 						end
 					end)
 
@@ -678,26 +700,28 @@ function fAdminMenu()
                             end
                         end)
 
-                    RageUI.ButtonWithStyle("Give véhicule (avec clé)", nil, {RightLabel =  "→"}, true, function(_, Active, Selected)
-                        if Selected then
-            
-                            local ped = GetPlayerPed(tgt)
-                            local ModelName = fAdminKeyboardInput("Véhicule", "", 100)
-            
-                            if ModelName and IsModelValid(ModelName) and IsModelAVehicle(ModelName) then
-                                RequestModel(ModelName)
-                                while not HasModelLoaded(ModelName) do
-                                    Citizen.Wait(0)
-                                end
-                                    --local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(GetPlayerPed(-1)), GetEntityHeading(GetPlayerPed(-1)), true, true)
-                                    TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
-                                    give_vehi(ModelName)
-                                    Wait(50)
-                            else
-                                ShowNotification("Erreur !")
-                            end
-                        end
-                        end)
+					if playergroup == "admin" then
+						RageUI.ButtonWithStyle("Give véhicule (avec clé)", nil, {RightLabel =  "→"}, true, function(_, Active, Selected)
+							if Selected then
+				
+								local ped = GetPlayerPed(tgt)
+								local ModelName = fAdminKeyboardInput("Véhicule", "", 100)
+				
+								if ModelName and IsModelValid(ModelName) and IsModelAVehicle(ModelName) then
+									RequestModel(ModelName)
+									while not HasModelLoaded(ModelName) do
+										Citizen.Wait(0)
+									end
+										--local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(GetPlayerPed(-1)), GetEntityHeading(GetPlayerPed(-1)), true, true)
+										TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+										give_vehi(ModelName)
+										Wait(50)
+								else
+									ShowNotification("Erreur !")
+								end
+							end
+						end)
+					end
 
                         RageUI.ButtonWithStyle("Changer la couleur du véhicule", nil,  {RightLabel = "→"}, true, function(Hovered, Active, Selected)
                         end, fAdminVehiculeCouleur)
@@ -1258,8 +1282,8 @@ end
 
 Keys.Register('F10', 'fAdmin', 'Ouvrir le menu F10', function()
     ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-        if group == 'admin' then
-    fAdminMenu()
+        if group == 'admin' or group == 'mod' or group == 'help' then
+    		fAdminMenu()
         end
     end)
 end)
@@ -1544,112 +1568,6 @@ function FullVehicleBoost()
 	end
 end
 
---BAN/WARN
-RegisterNUICallback("ban", function(data,cb)
-	if not data.target or not data.reason then return end
-	ESX.TriggerServerCallback("fAdmin:ban",function(success,reason)
-		if success then ESX.ShowNotification("~g~Successfully banned player") else ESX.ShowNotification(reason) end -- dont ask why i did it this way, im a bit retarded
-	end, data.target, data.reason, data.length, data.offline)
-end)
-
-RegisterNUICallback("warn", function(data,cb)
-	if not data.target or not data.message then return end
-	ESX.TriggerServerCallback("fAdmin:warn",function(success)
-		if success then ESX.ShowNotification("~g~Successfully warned player") else ESX.ShowNotification("~r~Something went wrong") end
-	end, data.target, data.message, data.anon)
-end)
-
-RegisterNUICallback("unban", function(data,cb)
-	if not data.id then return end
-	ESX.TriggerServerCallback("fAdmin:unban",function(success)
-		if success then ESX.ShowNotification("~g~Successfully unbanned player") else ESX.ShowNotification("~r~Something went wrong") end
-	end, data.id)
-end)
-
-RegisterNUICallback("getListData", function(data,cb)
-	if not data.list or not data.page then cb(nil); return end
-	ESX.TriggerServerCallback("fAdmin:getListData",function(data)
-		cb(data)
-	end, data.list, data.page)
-end)
-
-RegisterNUICallback("hidecursor", function(data,cb)
-	SetNuiFocus(false, false)
-end)
-
-AddEventHandler("playerSpawned", function(spawn)
-    if IsFirstSpawn and Config.backup_kick_method then
-        TriggerServerEvent("fAdmin:backupcheck")
-        IsFirstSpawn = false
-    end
-end)
-
-RegisterNetEvent("fAdmin:gotBanned")
-AddEventHandler("fAdmin:gotBanned",function(rsn)
-	Citizen.CreateThread(function()
-		local scaleform = RequestScaleformMovie("mp_big_message_freemode")
-		while not HasScaleformMovieLoaded(scaleform) do Citizen.Wait(0) end
-		BeginScaleformMovieMethod(scaleform, "SHOW_SHARD_WASTED_MP_MESSAGE")
-		PushScaleformMovieMethodParameterString("~r~BANNED")
-		PushScaleformMovieMethodParameterString(rsn)
-		PushScaleformMovieMethodParameterInt(5)
-		EndScaleformMovieMethod()
-		PlaySoundFrontend(-1, "LOSER", "HUD_AWARDS")
-		ClearDrawOrigin()
-		ESX.UI.HUD.SetDisplay(0)
-		while true do
-			Citizen.Wait(0)
-			DisableAllControlActions(0)
-			DisableFrontendThisFrame()
-			local ped = GetPlayerPed(-1)
-			ESX.UI.Menu.CloseAll()
-			SetEntityCoords(ped, 0, 0, 0, 0, 0, 0, false)
-			FreezeEntityPosition(ped, true)
-			DrawRect(0.0,0.0,2.0,2.0,0,0,0,255)
-			DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-		end
-		SetScaleformMovieAsNoLongerNeeded(scaleform)
-	end)
-end)
-
-RegisterNetEvent("fAdmin:receiveWarn")
-AddEventHandler("fAdmin:receiveWarn",function(sender,message)
-	TriggerEvent("chat:addMessage",{color={255,255,0},multiline=true,args={"BWH","You received a warning"..(sender~="" and " from "..sender or "").."!\n-> "..message}})
-	Citizen.CreateThread(function()
-		local scaleform = RequestScaleformMovie("mp_big_message_freemode")
-		while not HasScaleformMovieLoaded(scaleform) do Citizen.Wait(0) end
-		BeginScaleformMovieMethod(scaleform, "SHOW_SHARD_WASTED_MP_MESSAGE")
-		PushScaleformMovieMethodParameterString("~y~WARNING")
-		PushScaleformMovieMethodParameterString(message)
-		PushScaleformMovieMethodParameterInt(5)
-		EndScaleformMovieMethod()
-		PlaySoundFrontend(-1, "LOSER", "HUD_AWARDS")
-		local drawing = true
-		Citizen.SetTimeout((Config.warning_screentime * 1000),function() drawing = false end)
-		while drawing do
-			Citizen.Wait(0)
-			DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
-		end
-		SetScaleformMovieAsNoLongerNeeded(scaleform)
-	end)
-end)
-
-RegisterNetEvent("fAdmin:showWindow")
-AddEventHandler("fAdmin:showWindow",function(win)
-	if win=="ban" or win=="warn" then
-		ESX.TriggerServerCallback("fAdmin:getIndexedPlayerList",function(indexedPList)
-			SendNUIMessage({show=true,window=win,players=indexedPList})
-		end)
-	elseif win=="banlist" or win=="warnlist" then
-		SendNUIMessage({loading=true,window=win})
-		ESX.TriggerServerCallback(win=="banlist" and "fAdmin:getBanList" or "fAdmin:getWarnList",function(list,pages)
-			SendNUIMessage({show=true,window=win,list=list,pages=pages})
-		end)
-	end
-	SetNuiFocus(true, true)
-end)
-
-
 ---- Announce
 
 RegisterNetEvent('fAdmin:sendAnnounce')
@@ -1729,3 +1647,64 @@ AddEventHandler("fAdmin:delveh", function ()
         end
     end
 end)
+
+-- Spectacte
+
+function DrawPlayerInfo(target)
+    drawTarget = target
+    drawInfo = true
+end
+
+function StopDrawPlayerInfo()
+    drawInfo = false
+    drawTarget = 0
+end
+
+Citizen.CreateThread( function()
+    while true do
+        Citizen.Wait(0)
+        if drawInfo then
+            local text = {}
+            local targetPed = GetPlayerPed(drawTarget)
+            table.insert(text,"E pour stop spectate")     
+            for i,theText in pairs(text) do
+                SetTextFont(0)
+                SetTextProportional(1)
+                SetTextScale(0.0, 0.30)
+                SetTextDropshadow(0, 0, 0, 0, 255)
+                SetTextEdge(1, 0, 0, 0, 255)
+                SetTextDropShadow()
+                SetTextOutline()
+                SetTextEntry("STRING")
+                AddTextComponentString(theText)
+                EndTextCommandDisplayText(0.3, 0.7+(i/30))
+            end     
+            if IsControlJustPressed(0,103) then
+                local targetPed = PlayerPedId()
+                local targetx,targety,targetz = table.unpack(GetEntityCoords(targetPed, false))
+                RequestCollisionAtCoord(targetx,targety,targetz)
+                NetworkSetInSpectatorMode(false, targetPed)
+                StopDrawPlayerInfo()    
+            end  
+        end
+    end
+end)
+
+function SpectatePlayer(targetPed,target,name)
+    local playerPed = PlayerPedId() -- yourself
+    enable = true
+    if targetPed == playerPed then enable = false end
+    if(enable)then
+		 local targetx,targety,targetz = table.unpack(GetEntityCoords(targetPed, false))
+        RequestCollisionAtCoord(targetx,targety,targetz)
+        NetworkSetInSpectatorMode(true, targetPed)
+        DrawPlayerInfo(target)
+        ESX.ShowNotification('~g~Mode spectateur en cours')
+    else
+        local targetx,targety,targetz = table.unpack(GetEntityCoords(targetPed, false))
+        RequestCollisionAtCoord(targetx,targety,targetz)
+        NetworkSetInSpectatorMode(false, targetPed)
+        StopDrawPlayerInfo()
+        ESX.ShowNotification('~b~Mode spectateur arrêtée')
+    end
+end
