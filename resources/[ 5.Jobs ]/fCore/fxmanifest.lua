@@ -32,14 +32,3 @@ dependencies {
 }
 
 export 'GeneratePlate'
-
-ui_page 'html/index.html'
-
-files {
-    'html/index.html',
-    'html/script.js',
-    'html/style.css',
-    'html/jquery.datetimepicker.min.css',
-    'html/jquery.datetimepicker.full.min.js',
-    'html/date.format.js'
-}
