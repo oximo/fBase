@@ -1519,25 +1519,7 @@ ALTER TABLE `addon_inventory_items`
 --
 ALTER TABLE `billing`
   ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `bwh_bans`
---
-ALTER TABLE `bwh_bans`
-  ADD PRIMARY KEY (`id`);
-
---
--- Índices para tabela `bwh_identifiers`
---
-ALTER TABLE `bwh_identifiers`
-  ADD PRIMARY KEY (`steam`);
-
---
--- Índices para tabela `bwh_warnings`
---
-ALTER TABLE `bwh_warnings`
-  ADD PRIMARY KEY (`id`);
-
+  
 --
 -- Índices para tabela `datastore`
 --
@@ -1730,18 +1712,6 @@ ALTER TABLE `addon_inventory_items`
 --
 ALTER TABLE `billing`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT de tabela `bwh_bans`
---
-ALTER TABLE `bwh_bans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `bwh_warnings`
---
-ALTER TABLE `bwh_warnings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `datastore_data`
