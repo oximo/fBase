@@ -867,7 +867,8 @@ INSERT INTO `licenses` (`type`, `label`) VALUES
 ('dmv', 'Code de la route'),
 ('drive', 'Permis de voiture'),
 ('drive_bike', 'Permis moto'),
-('drive_truck', 'Permis camion');
+('drive_truck', 'Permis camion'),
+('weapon', 'Permis port d\'armes');
 
 -- --------------------------------------------------------
 
