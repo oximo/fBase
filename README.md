@@ -2,7 +2,7 @@
 
 Fellow | Communauté ✨
 
-https://discord.gg/zcvR7sKvCR
+https://discord.gg/bJCsrG5h2G
 
 Extended 1.3 aka Legacy
 
