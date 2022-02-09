@@ -62,17 +62,19 @@ end)
 
 RegisterNetEvent('fTequila:bar')
 AddEventHandler('fTequila:bar', function(item,price)
-
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(source)
-    local xMoney = xPlayer.getMoney()
 
-    if xMoney >= price then
-        xPlayer.removeMoney(price)
-        xPlayer.addInventoryItem(item, 1)
+    TriggerEvent('esx_addonaccount:getSharedAccount', 'society_tequila', function(account)
+        societyAccount = account
+    end)
+
+    if price <= societyAccount.money then
         TriggerClientEvent('esx:showNotification', source, "~g~Achats~w~ effectué !")
+        xPlayer.addInventoryItem(item, 1)
+        societyAccount.removeMoney(price)
     else
-         TriggerClientEvent('esx:showNotification', source, "Vous n'avez assez ~r~d\'argent")
+        TriggerClientEvent('esx:showNotification', source, "Vous n'avez assez ~r~d\'argent sur l'entrprise")
     end
 end)
 
