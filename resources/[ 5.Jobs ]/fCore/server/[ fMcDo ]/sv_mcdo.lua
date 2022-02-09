@@ -108,7 +108,7 @@ AddEventHandler('mcdonalds:frigo', function(ITEM,price)
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(source)
 		
-    TriggerEvent('esx_addonaccount:getSharedAccount', 'society_unicorn', function(account)
+    TriggerEvent('esx_addonaccount:getSharedAccount', 'society_mcdonalds', function(account)
         societyAccount = account
     end)
 
