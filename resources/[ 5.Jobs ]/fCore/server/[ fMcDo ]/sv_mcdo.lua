@@ -105,17 +105,19 @@ end)
 
 RegisterNetEvent('mcdonalds:frigo')
 AddEventHandler('mcdonalds:frigo', function(ITEM,price)
-
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(source)
-    local xMoney = xPlayer.getMoney()
+		
+    TriggerEvent('esx_addonaccount:getSharedAccount', 'society_unicorn', function(account)
+        societyAccount = account
+    end)
 
-    if xMoney >= price then
-        xPlayer.removeMoney(price)
-        xPlayer.addInventoryItem(ITEM, 1)
+    if price <= societyAccount.money then
         TriggerClientEvent('esx:showNotification', source, "~g~Achats~w~ effectué !")
+        xPlayer.addInventoryItem(ITEM, 1)
+        societyAccount.removeMoney(price)
     else
-         TriggerClientEvent('esx:showNotification', source, "Vous n'avez assez ~r~d\'argent")
+         TriggerClientEvent('esx:showNotification', source, "Vous n'avez assez ~r~d\'argent sur l'entrprise")
     end
 end)
 
