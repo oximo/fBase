@@ -24,7 +24,7 @@ Bahamas.pos = {
 	},
 }
 
-Bar = {
+Bahamas.Bar = {
     item = {
     {Label = "Pain", Name = "bread", Price = 1},
     {Label = "Eau", Name = "water", Price = 1},
@@ -120,7 +120,7 @@ Tequila.pos = {
 	},
 }
 
-Bar = {
+Tequila.Bar = {
     item = {
     {Label = "Pain", Name = "bread", Price = 1},
     {Label = "Eau", Name = "water", Price = 1},
@@ -157,7 +157,7 @@ Split.pos = {
     },
 }
 
-Bar = {
+Split.Bar = {
     item = {
     {Label = "Pain", Name = "bread", Price = 1},
     {Label = "Eau", Name = "water", Price = 1},
@@ -194,7 +194,7 @@ Unicorn.pos = {
 	},
 }
 
-Bar = {
+Unicorn.Bar = {
     item = {
     {Label = "Pain", Name = "bread", Price = 1},
     {Label = "Eau", Name = "water", Price = 1},
