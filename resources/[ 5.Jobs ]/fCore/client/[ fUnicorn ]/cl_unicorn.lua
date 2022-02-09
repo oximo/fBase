@@ -131,7 +131,7 @@ function OpenPrendreMenuUnicorn()
     while PrendreMenu do
         Citizen.Wait(0)
             RageUI.IsVisible(PrendreMenu, true, true, true, function()
-            for k,v in pairs(Bar.item) do
+            for k,v in pairs(Unicorn.Bar.item) do
             RageUI.ButtonWithStyle(v.Label.. ' Prix: ' .. v.Price .. '€', nil, { }, true, function(Hovered, Active, Selected)
               if (Selected) then
                   TriggerServerEvent('fUnicorn:bar', v.Name, v.Price)
