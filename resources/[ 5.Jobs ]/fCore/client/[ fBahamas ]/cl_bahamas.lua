@@ -132,7 +132,7 @@ function OpenPrendreMenuBahamas()
     while PrendreMenu do
         Citizen.Wait(0)
             RageUI.IsVisible(PrendreMenu, true, true, true, function()
-            for k,v in pairs(Bar.item) do
+            for k,v in pairs(Bahamas.Bar.item) do
             RageUI.ButtonWithStyle(v.Label.. ' Prix: ' .. v.Price .. '€', nil, { }, true, function(Hovered, Active, Selected)
               if (Selected) then
                   TriggerServerEvent('fBahamas:bar', v.Name, v.Price)
