@@ -70,7 +70,7 @@ function Menuf6Ammu()
                         local raison = ""
                         local montant = 0
                         AddTextEntry("FMMC_MPM_NA", "Objet de la facture")
-                        DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Donnez le motif de la facture :", "", "", "", "", 30)
+                        DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Donnez le motif de la facture :", "", "", "", "", 30)
                         while (UpdateOnscreenKeyboard() == 0) do
                             DisableAllControlActions(0)
                             Wait(0)
@@ -81,7 +81,7 @@ function Menuf6Ammu()
                                 raison = result
                                 result = nil
                                 AddTextEntry("FMMC_MPM_NA", "Montant de la facture")
-                                DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Indiquez le montant de la facture :", "", "", "", "", 30)
+                                DisplayOnscreenKeyboard(1, "FMMC_MPM_NA", "Indiquez le montant de la facture :", "", "", "", "", 30)
                                 while (UpdateOnscreenKeyboard() == 0) do
                                     DisableAllControlActions(0)
                                     Wait(0)
@@ -458,7 +458,7 @@ function MenuCraftAmmu()
                             RageUI.ButtonWithStyle(inventory.items[v].label.." ["..inventory.items[v].count.."]", nil, {RightLabel = "→"},true, function(Hovered, Active, Selected)
                                 if (Selected) then
                                     if inventory.items[v].name == "metaux" then
-                                        nbmetaux = KeyboardInput('Veuillez choisir le nombre de métaux pour le craft', '', 2)
+                                        nbmetaux = KeyboardInput('Veuillez choisir le nombre de métaux pour le craft', '', 3)
                                         if tonumber(nbmetaux) then
                                             if inventory.items[v].count >= tonumber(nbmetaux) then
                                                 RageUI.Popup({message = "~g~Montant validé"})
@@ -473,7 +473,7 @@ function MenuCraftAmmu()
                                         end
                                     end
                                     if inventory.items[v].name == "meche" then
-                                        nbmeche = KeyboardInput('Veuillez choisir le nombre de mèche pour le craft', '', 2)
+                                        nbmeche = KeyboardInput('Veuillez choisir le nombre de mèche pour le craft', '', 3)
                                         if tonumber(nbmeche) then
                                             if inventory.items[v].count >= tonumber(nbmeche) then
                                                 RageUI.Popup({message = "~g~Montant validé"})
@@ -488,7 +488,7 @@ function MenuCraftAmmu()
                                         end
                                     end
                                     if inventory.items[v].name == "canon" then
-                                        nbcanon = KeyboardInput('Veuillez choisir le nombre de canon pour le craft', '', 2)
+                                        nbcanon = KeyboardInput('Veuillez choisir le nombre de canon pour le craft', '', 3)
                                         if tonumber(nbcanon) then
                                             if inventory.items[v].count >= tonumber(nbcanon) then
                                                 RageUI.Popup({message = "~g~Montant validé"})
@@ -503,7 +503,7 @@ function MenuCraftAmmu()
                                         end
                                     end
                                     if inventory.items[v].name == "levier" then
-                                        nblevier = KeyboardInput('Veuillez choisir le nombre de levier pour le craft', '', 2)
+                                        nblevier = KeyboardInput('Veuillez choisir le nombre de levier pour le craft', '', 3)
                                         if tonumber(nblevier) then
                                             if inventory.items[v].count >= tonumber(nblevier) then
                                                 RageUI.Popup({message = "~g~Montant validé"})
