@@ -140,7 +140,7 @@ Citizen.CreateThread(function()
                 if IsEntityAtCoord(PlayerPedId(), 0.0, -0.0, -0.0, 1.5, 1.5, 1.5, 0, 1, 0) then 
                     Timer = 0
                         if IsControlJustPressed(1, 51) then
-                            fCokeRecolte()
+                            fCokeTraitement()
                         end
             end
             if zoneDistance ~= nil then
