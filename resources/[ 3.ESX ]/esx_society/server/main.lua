@@ -440,7 +440,7 @@ ESX.RegisterServerCallback('esx_society:setJobSalary2', function(source, cb, job
 			}, function(rowsChanged)
 				Jobs[job2].grades[tostring(grade2)].salary = salary
 
-				local xPlayers = ESX.GetExtendedPlayers('job2', job)
+				local xPlayers = ESX.GetExtendedPlayers('job2', job2)
 				for _, xTarget in pairs(xPlayers) do
 
 					if xTarget.job2.grade == grade2 then
