@@ -370,7 +370,7 @@ end)
 
 RegisterNetEvent('skinchanger:loadSkin')
 AddEventHandler('skinchanger:loadSkin', function(skin, cb)
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	local characterModel
 	if skin['sex'] ~= LastSex then
 		LoadSkin = skin
@@ -413,7 +413,7 @@ end)
 
 RegisterNetEvent('skinchanger:loadClothes')
 AddEventHandler('skinchanger:loadClothes', function(playerSkin, clothesSkin)
-	local playerPed = GetPlayerPed(-1)
+	local playerPed = PlayerPedId()
 	local characterModel
 	if playerSkin['sex'] ~= LastSex then
 		LoadClothes = {
