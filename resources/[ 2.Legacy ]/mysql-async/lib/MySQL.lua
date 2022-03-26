@@ -34,7 +34,7 @@ function MySQL.Sync.execute(query, params)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 ---
@@ -54,7 +54,7 @@ function MySQL.Sync.fetchAll(query, params)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 
@@ -76,7 +76,7 @@ function MySQL.Sync.fetchScalar(query, params)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 
@@ -97,7 +97,7 @@ function MySQL.Sync.insert(query, params)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 
@@ -115,7 +115,7 @@ function MySQL.Sync.store(query)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 
@@ -134,7 +134,7 @@ function MySQL.Sync.transaction(querys, params)
         res = result
         finishedQuery = true
     end)
-    repeat Citizen.Wait(0) until finishedQuery == true
+    repeat Wait(0) until finishedQuery == true
     return res
 end
 
@@ -215,13 +215,13 @@ function MySQL.Async.transaction(querys, params, func)
 end
 
 function MySQL.ready (callback)
-    Citizen.CreateThread(function ()
+    CreateThread(function ()
         -- add some more error handling
         while GetResourceState('mysql-async') ~= 'started' do
-            Citizen.Wait(0)
+            Wait(0)
         end
         while not exports['mysql-async']:is_ready() do
-            Citizen.Wait(0)
+            Wait(0)
         end
         callback()
     end)

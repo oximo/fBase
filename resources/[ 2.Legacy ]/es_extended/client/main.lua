@@ -1,8 +1,8 @@
 local pickups = {}
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while not Config.Multichar do
-		Citizen.Wait(0)
+		Wait(0)
 		if NetworkIsPlayerActive(PlayerId()) then
 			exports.spawnmanager:setAutoSpawn(false)
 			DoScreenFadeOut(0)
@@ -20,7 +20,7 @@ AddEventHandler('esx:playerLoaded', function(xPlayer, isNew, skin)
 	FreezeEntityPosition(PlayerPedId(), true)
 
 	if Config.Multichar then
-		Citizen.Wait(3000)
+		Wait(3000)
 	else
 		exports.spawnmanager:spawnPlayer({
 			x = ESX.PlayerData.coords.x,
@@ -48,7 +48,7 @@ AddEventHandler('esx:playerLoaded', function(xPlayer, isNew, skin)
 		end)
 	end
 
-	while ESX.PlayerData.ped == nil do Citizen.Wait(20) end
+	while ESX.PlayerData.ped == nil do Wait(20) end
 	-- enable PVP
 	if Config.EnablePVP then
 		SetCanAttackFriendly(ESX.PlayerData.ped, true, false)
@@ -107,7 +107,7 @@ end)
 
 AddEventHandler('skinchanger:modelLoaded', function()
 	while not ESX.PlayerLoaded do
-		Citizen.Wait(100)
+		Wait(100)
 	end
 	TriggerEvent('esx:restoreLoadout')
 end)
@@ -340,7 +340,7 @@ AddEventHandler('esx:deleteVehicle', function(radius)
 			local attempt = 0
 
 			while not NetworkHasControlOfEntity(entity) and attempt < 100 and DoesEntityExist(entity) do
-				Citizen.Wait(100)
+				Wait(100)
 				NetworkRequestControlOfEntity(entity)
 				attempt = attempt + 1
 			end
@@ -357,7 +357,7 @@ AddEventHandler('esx:deleteVehicle', function(radius)
 		end
 
 		while not NetworkHasControlOfEntity(vehicle) and attempt < 100 and DoesEntityExist(vehicle) do
-			Citizen.Wait(100)
+			Wait(100)
 			NetworkRequestControlOfEntity(vehicle)
 			attempt = attempt + 1
 		end
@@ -370,10 +370,10 @@ end)
 
 -- Pause menu disables HUD display
 if Config.EnableHud then
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local isPaused = false
 		while true do
-			Citizen.Wait(300)
+			Wait(300)
 
 			if IsPauseMenuActive() and not isPaused then
 				isPaused = true
@@ -392,7 +392,7 @@ end
 
 function StartServerSyncLoops()
 	-- keep track of ammo
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local currentWeapon = {timer=0}
 		while ESX.PlayerLoaded do
 			local sleep = 5
@@ -419,12 +419,12 @@ function StartServerSyncLoops()
 			else
 				sleep = 200
 			end
-			Citizen.Wait(sleep)
+			Wait(sleep)
 		end
 	end)
 
 	-- sync current player coords with server
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		local previousCoords = vector3(ESX.PlayerData.coords.x, ESX.PlayerData.coords.y, ESX.PlayerData.coords.z)
 
 		while ESX.PlayerLoaded do
@@ -442,7 +442,7 @@ function StartServerSyncLoops()
 					TriggerServerEvent('esx:updateCoords', formattedCoords)
 				end
 			end
-			Citizen.Wait(1500)
+			Wait(1500)
 		end
 	end)
 end
@@ -463,9 +463,9 @@ if not Config.EnableWantedLevel then
 	SetMaxWantedLevel(0)
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		local playerCoords, letSleep = GetEntityCoords(ESX.PlayerData.ped), true
 		local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer(playerCoords)
 
@@ -484,7 +484,7 @@ Citizen.CreateThread(function()
 							local dict, anim = 'weapons@first_person@aim_rng@generic@projectile@sticky_bomb@', 'plant_floor'
 							ESX.Streaming.RequestAnimDict(dict)
 							TaskPlayAnim(ESX.PlayerData.ped, dict, anim, 8.0, 1.0, 1000, 16, 0.0, false, false, false)
-							Citizen.Wait(1000)
+							Wait(1000)
 
 							TriggerServerEvent('esx:onPickup', pickupId)
 							PlaySoundFrontend(-1, 'PICK_UP', 'HUD_FRONTEND_DEFAULT_SOUNDSET', false)
@@ -505,7 +505,7 @@ Citizen.CreateThread(function()
 		end
 
 		if letSleep then
-			Citizen.Wait(500)
+			Wait(500)
 		end
 	end
 end)
@@ -529,7 +529,7 @@ AddEventHandler("esx:tpm", function()
                 break
             end
 
-            Citizen.Wait(5)
+            Wait(5)
         end
         TriggerEvent('chatMessage', "Successfully Teleported")
     else
@@ -557,9 +557,9 @@ AddEventHandler("esx:noclip", function(input)
 	end)
 	
 	local heading = 0
-	Citizen.CreateThread(function()
+	CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 
 		if(noclip)then
 			SetEntityCoordsNoOffset(ESX.PlayerData.ped, noclip_pos.x, noclip_pos.y, noclip_pos.z, 0, 0, 0)
@@ -598,7 +598,7 @@ AddEventHandler("esx:noclip", function(input)
 				noclip_pos = GetOffsetFromEntityInWorldCoords(ESX.PlayerData.ped, 0.0, 0.0, -1.0)
 			end
 		else
-			Citizen.Wait(200)
+			Wait(200)
 		end
 	end
 end)

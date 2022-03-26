@@ -1,5 +1,5 @@
 local NewPlayer, LoadPlayer = -1, -1
-Citizen.CreateThread(function()
+CreateThread(function()
 	SetMapName('San Andreas')
 	SetGameType('ESX Legacy')
 	
@@ -104,7 +104,7 @@ AddEventHandler('playerConnecting', function(name, setCallback, deferrals)
 	deferrals.defer()
 	local playerId = source
 	local identifier = ESX.GetIdentifier(playerId)
-	Citizen.Wait(100)
+	Wait(100)
 
 	if identifier then
 		if ESX.GetPlayerFromIdentifier(identifier) then
@@ -619,8 +619,8 @@ end)
 
 AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
 	if eventData.secondsRemaining == 60 then
-		Citizen.CreateThread(function()
-			Citizen.Wait(50000)
+		CreateThread(function()
+			Wait(50000)
 			ESX.SavePlayers()
 		end)
 	end

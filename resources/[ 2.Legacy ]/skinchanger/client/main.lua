@@ -94,10 +94,10 @@ function LoadDefaultModel(malePed, cb)
 
 	RequestModel(characterModel)
 
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while not HasModelLoaded(characterModel) do
 			RequestModel(characterModel)
-			Citizen.Wait(0)
+			Wait(0)
 		end
 
 		if IsModelInCdimage(characterModel) and IsModelValid(characterModel) then
@@ -393,11 +393,11 @@ AddEventHandler('skinchanger:loadSkin', function(skin, cb)
 
 	LastSex = skin['sex']
 	
-  Citizen.CreateThread(function()
+  CreateThread(function()
 
     while not HasModelLoaded(characterModel) do
       RequestModel(characterModel)
-      Citizen.Wait(0)
+      Wait(0)
     end
 
     if IsModelInCdimage(characterModel) and IsModelValid(characterModel) then
@@ -435,11 +435,11 @@ AddEventHandler('skinchanger:loadClothes', function(playerSkin, clothesSkin)
 
 	LastSex = playerSkin['sex']
 	
-  Citizen.CreateThread(function()
+  CreateThread(function()
 
     while not HasModelLoaded(characterModel) do
       RequestModel(characterModel)
-      Citizen.Wait(0)
+      Wait(0)
     end
 
     if IsModelInCdimage(characterModel) and IsModelValid(characterModel) then
