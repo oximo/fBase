@@ -1,4 +1,4 @@
-RegisterServerEvent('esx_skin:save')
+RegisterNetEvent('esx_skin:save')
 AddEventHandler('esx_skin:save', function(skin)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local defaultMaxWeight = ESX.GetConfig().MaxWeight
@@ -16,7 +16,7 @@ AddEventHandler('esx_skin:save', function(skin)
 	})
 end)
 
-RegisterServerEvent('esx_skin:responseSaveSkin')
+RegisterNetEvent('esx_skin:responseSaveSkin')
 AddEventHandler('esx_skin:responseSaveSkin', function(skin)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
