@@ -2484,6 +2484,12 @@ fAdmin             = {}
 
 fAdmin.webhooks = "ton webhooks ici"
 
+fAdmin.groupsOpenMenu = { -- group qui peuvent ouvrir le menu ici
+	["admin"] = true,
+	["mod"] = true,
+	["help"] = true
+}
+
 --GENERAL
 Config                   = {}
 Config.Permission        = "admin" -- Perm qui peuvent faire les commandes

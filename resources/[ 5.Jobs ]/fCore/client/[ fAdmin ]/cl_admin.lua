@@ -14,42 +14,27 @@ end
 
 ]]
 
-ESX = nil
+
+local ESX = exports.es_extended:getSharedObject()
 
 CreateThread(function()
-    while ESX == nil do
-        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-        Wait(10)
-    end
-
-    while ESX.GetPlayerData().job == nil do
-        Wait(10)
-    end
-	ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-        playergroup = group
-    end)
-	SetNuiFocus(false, false)
-    ESX.PlayerData = ESX.GetPlayerData()
-end)
-
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-	ESX.PlayerData = xPlayer
+	SetNuiFocus(false, false) -- je sais pas pq c'est ici :/
 end)
 
 local crossthemap = false
 local fastSprint = false
 local ServersIdSession = {}
-local pos_before_assist,assisting,assist_target,last_assist,IsFirstSpawn = nil, false, nil, nil, true
 local grade = "inconnu"
-local onlinePlayers = GetNumberOfPlayers()
 local gamerTags = {}
-local spectating = false
 
+local reportlist
+
+
+-- TODO : Passer ça côté serveur pour rendre ça compatible OneSync Infinity
 CreateThread(function()
     while true do
         Wait(500)
-        for k,v in pairs(GetActivePlayers()) do
+        for _,v in pairs(GetActivePlayers()) do
             local found = false
             for _,j in pairs(ServersIdSession) do
                 if GetPlayerServerId(v) == j then
@@ -57,7 +42,7 @@ CreateThread(function()
                 end
             end
             if not found then
-                table.insert(ServersIdSession, GetPlayerServerId(v))
+				ServersIdSession[#ServersIdSession+1] = GetPlayerServerId(v)
             end
         end
     end
@@ -98,18 +83,8 @@ CreateThread(function()
     end
 end)
 
-function defESX()
-    while ESX == nil do
-        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-        Wait(0)
-    end
-end
 
-CreateThread(function()
-    defESX()
-end)
-
-function Notification(msg)
+local function Notification(msg)
 	SetNotificationTextEntry('STRING')
 	AddTextComponentSubstringPlayerName(msg)
 	DrawNotification(false, true)
@@ -120,31 +95,27 @@ AddEventHandler("fAdmin:Notification", function(msg)
 	Notification(msg) 
 end)
 
-RegisterNetEvent("fAdmin:Open/CloseReport")
-AddEventHandler("fAdmin:Open/CloseReport", function(type, nomdumec, raisondumec)
-    if type == 1 then
-        ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-            if group == 'admin' or group == 'mod' or group == 'help' then
-                ESX.ShowNotification('Un nouveau report à été effectué !')
-            end
-        end)
-    elseif type == 2 then
-        ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-            if group == 'admin' or group == 'mod' or group == 'help' then
-                ESX.ShowNotification('Le report de ~b~'..nomdumec..'~s~ à été fermé !')
-            end
-        end)
-    end
+RegisterNetEvent('fAdmin:Open/CloseReport')
+AddEventHandler('fAdmin:Open/CloseReport', function(type, nomdumec, raisondumec)
+	ESX.TriggerServerCallback('fAdmin:getUsergroup', function(canOpen)
+		if (canOpen) then
+			if (type == 1) then
+				ESX.ShowNotification('Un nouveau report à été effectué !')
+			else
+				ESX.ShowNotification('Le report de ~b~'..nomdumec..'~s~ à été fermé !')
+			end
+		end
+	end)
 end)
 
-function setpsurlemec(iddumec) 
+local function setpsurlemec(iddumec) 
     if iddumec then
         local PlayerPos = GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(iddumec)))
         SetEntityCoords(PlayerPedId(), PlayerPos.x, PlayerPos.y, PlayerPos.z)
     end
 end
 
-function tplemecsurmoi(iddugars)
+local function tplemecsurmoi(iddugars)
     if iddugars then
         local plyPedCoords = GetEntityCoords(PlayerPedId())
         TriggerServerEvent('fAdmin:bring', iddugars, plyPedCoords, "bring")
@@ -158,14 +129,13 @@ AddEventHandler('fAdmin:bring', function(plyPedCoords)
 end)
 
 local function getInfoReport()
-    local info = {}
     ESX.TriggerServerCallback('fAdmin:infoReport', function(info)
         reportlist = info
     end)
 end
 
 -- Menu
-function fAdminMenu()
+local function fAdminMenu() -- TODO : Remplacer les executecommand par les vraies fonctions
     local fAdmin = RageUI.CreateMenu("Menu Admin", "by Fellow")
     local fAdminActionsPerso = RageUI.CreateSubMenu(fAdmin, "Menu Admin", "Personnel")
 	local fAdminActionsServeur = RageUI.CreateSubMenu(fAdmin, "Menu Admin", "Serveur")
@@ -262,7 +232,7 @@ function fAdminMenu()
 						local y = fAdminKeyboardInput("Entrer la position Y", "", 10)
 						local z = fAdminKeyboardInput("Entrer la position Z", "", 10)
 						if x and y and z then
-							ExecuteCommand("setcoords "..x.." "..y.." "..z)
+							SetEntityCoords(PlayerPedId(), x, y, z, false, false, false, false)
 							ESX.ShowNotification("Vous venez de vous rendre à "..street2)
 						else
 							RageUI.CloseAll()	
@@ -313,9 +283,9 @@ function fAdminMenu()
                     if Selected then
                         fastSprint = Checked
                         if Checked then
-                            SetRunSprintMultiplierForPlayer(PlayerId(), 1.49)
+                            SetRunSprintMultiplierForPlayer(PlayerPedId(), 1.49)
                         else
-                            SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+                            SetRunSprintMultiplierForPlayer(PlayerPedId(), 1.0)
                         end
                     end
                 end)
@@ -1280,11 +1250,12 @@ function fAdminMenu()
     end
 end
 
-Keys.Register('F10', 'fAdmin', 'Ouvrir le menu F10', function()
-    ESX.TriggerServerCallback('fAdmin:getUsergroup', function(group)
-        if group == 'admin' or group == 'mod' or group == 'help' then
-    		fAdminMenu()
-        end
+
+Keys.Register('F10', 'fAdmin', 'Ouvrir le menu Admin', function()
+    ESX.TriggerServerCallback('fAdmin:getUsergroup', function(canOpen)
+		if (canOpen) then
+			fAdminMenu()
+		end
     end)
 end)
 
