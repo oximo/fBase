@@ -83,7 +83,7 @@ end
 --ranger voiture
 function rangervoiture()
     local playerPed  = PlayerPedId()
-    if IsPedInAnyVehicle(playerPed,  false) then
+    if IsPedInAnyVehicle(playerPed,  false) and IsVehicleSeatFree(vehicle, 0) then
         local playerPed    = PlayerPedId()
         local coords       = GetEntityCoords(playerPed)
         local vehicle      = GetVehiclePedIsIn(playerPed, false)
