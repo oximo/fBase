@@ -183,7 +183,7 @@ local function fAdminMenu() -- TODO : Remplacer les executecommand par les vraie
         Wait(0)
             RageUI.IsVisible(fAdmin, true, true, true, function()
 
-                RageUI.Separator("~r~["..grade.."] ~y~"..GetPlayerName(PlayerId()))
+                RageUI.Separator("~y~"..GetPlayerName(PlayerId()))
 
 				players = {}
 				for _, player in ipairs(GetActivePlayers()) do
