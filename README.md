@@ -1,4 +1,5 @@
-# fBase by Fellow 
+# fBase by Fellow MODIFIED !
+
 Extended 1.3 aka Legacy
 
 Modifié par Oximo pour l'inventaire Quasar, Craft, téléphone est pleins d'autres choses !
