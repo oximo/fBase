@@ -90,13 +90,12 @@ CreateThread(function()
         end
         if (zoneDistance <= 1.5) then
             interval = 0
-            recoltepossible = true
             RageUI.Text({ message = "Appuyez sur ~b~E~w~ pour récolter de la coke", time_display = 1 })
             if IsControlJustPressed(1, 51) then
                 fCokeRecolte()
             end
         end
-        if (zoneDistance > 2.5) then
+        if (zoneDistance > 1.5) then
             recoltepossible = false
         end
         Wait(interval)
@@ -134,10 +133,14 @@ end
 
 
 function recoltecoke()
-    if not recoltepossible then return end
+    if not recoltepossible then
+        recoltepossible = true
     while recoltepossible do
-        Wait(2000)
+        Citizen.Wait(2000)
         TriggerServerEvent('rcoke')
+    end
+    else
+        recoltepossible = false
     end
 end
 
