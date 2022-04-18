@@ -1,6 +1,4 @@
-ESX = nil
-
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+local ESX = exports.es_extended:getSharedObject()
 
 RegisterNetEvent('rcoke')
 AddEventHandler('rcoke', function()
