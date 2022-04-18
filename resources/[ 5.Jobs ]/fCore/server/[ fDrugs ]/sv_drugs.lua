@@ -16,23 +16,6 @@ AddEventHandler('rcoke', function()
     end
 end)
 
-RegisterNetEvent('tcoke')
-AddEventHandler('tcoke', function()
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-
-    local coke = xPlayer.getInventoryItem('coke').count
-    local coke_pooch = xPlayer.getInventoryItem('coke_pooch').count
-
-    if coke_pooch > 50 then
-        TriggerClientEvent('esx:showNotification', source, '~r~Il semble que tu ne puisses plus porter de sachets de coke .. Vas les vendre')
-    elseif coke < 3 then
-        TriggerClientEvent('esx:showNotification', source, '~r~Pas assez de coke pour traiter')
-    else
-        xPlayer.removeInventoryItem('coke', 5)
-        xPlayer.addInventoryItem('coke_pooch', 1)    
-    end
-end)
 
 RegisterNetEvent('rmeth')
 AddEventHandler('rmeth', function()
@@ -201,6 +184,23 @@ AddEventHandler('tlsd', function()
     else
         xPlayer.removeInventoryItem('lsd', 5)
         xPlayer.addInventoryItem('lsd_pooch', 1)    
+    end
+end)
+
+RegisterNetEvent('tcoke', function()
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local coke = xPlayer.getInventoryItem('coke').count
+    local coke_pooch = xPlayer.getInventoryItem('coke_pooch').count
+
+    if coke_pooch > 20 then
+        TriggerClientEvent('esx:showNotification', source, '~r~Il semble que tu ne puisses plus porter de sachets de Coke .. Vas les vendre')
+        return
+    elseif coke < 3 then
+        TriggerClientEvent('esx:showNotification', source, '~r~Pas assez de coke pour traiter')
+        return
+    else
+        xPlayer.removeInventoryItem('coke', 5)
+        xPlayer.addInventoryItem('coke_pooch', 1)
     end
 end)
 
