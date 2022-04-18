@@ -98,7 +98,7 @@ CreateThread(function()
         if (zoneDistance > 1.5) then
             recoltepossible = false
         end
-        Wait(interval)
+        Wait(0)
     end
 end)
 
