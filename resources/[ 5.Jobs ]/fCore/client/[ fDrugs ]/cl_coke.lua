@@ -38,7 +38,7 @@ local function fCokeRecolte()
                             if (Selected) then     
                                 TaskStartScenarioInPlace(PlayerPedId(), 'WORLD_HUMAN_GARDENER_PLANT', 0, true)
                                 Wait(100)         
-                                recoltecoke()
+                                recolteCoke()
                                 ClearPedTasksImmediately(PlayerPedId())
                                 RageUI.CloseAll()
                             end
@@ -95,7 +95,9 @@ CreateThread(function()
                 fCokeRecolte()
             end
         end
+        --print(1, zoneDistance)
         if (zoneDistance > 1.5) then
+            --print(2, 'is executed')
             recoltepossible = false
         end
         Wait(0)
@@ -132,15 +134,16 @@ function notify(text)
 end
 
 
-function recoltecoke()
-    if not recoltepossible then
-        recoltepossible = true
+
+function recolteCoke()
+    if not recoltepossible then recoltepossible = true end
     while recoltepossible do
-        Citizen.Wait(2000)
-        TriggerServerEvent('rcoke')
-    end
-    else
-        recoltepossible = false
+        coords = #(GetEntityCoords(PlayerPedId()) - fDrugs.coke.recolte)
+        if (coords > 1.5) then return end
+        if (coords < 1.5) then
+            TriggerServerEvent('rcoke')
+        end
+    Wait(2000)
     end
 end
 
