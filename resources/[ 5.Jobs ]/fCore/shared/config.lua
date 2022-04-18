@@ -1219,12 +1219,8 @@ fDrugs.jeveuxblipweed = true
 fDrugs.jeveuxmarker = true
 
 fDrugs.coke = {
-	recolte = {
-		position = {x = 1833.67, y = 5040.55, z = 58.25}
-	},
-	traitement = {
-		position = {x = 1183.82, y = -3174.42, z = 7.11}
-    },
+	recolte = vector3(1833.67, 5040.55, 58.25),
+	traitement = vector3(1183.82, -3174.42, 7.11)
 }
 
 fDrugs.ecstasy = {

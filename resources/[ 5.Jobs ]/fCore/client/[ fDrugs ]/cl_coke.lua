@@ -3,7 +3,7 @@ local ESX = exports.es_extended:getSharedObject()
 
 CreateThread(function()
     if fDrugs.jeveuxblipcoke then
-        local blip = AddBlipForCoord(fDrugs.coke.recolte.position.x, fDrugs.coke.recolte.position.y, fDrugs.coke.recolte.position.z)
+        local blip = AddBlipForCoord(fDrugs.coke.recolte.x, fDrugs.coke.recolte.y, fDrugs.coke.recolte.z)
         SetBlipSprite(blip, 501)
 		SetBlipScale (blip, 0.6)
 		SetBlipColour(blip, 0)
@@ -16,7 +16,7 @@ end)
 
 CreateThread(function()
     if fDrugs.jeveuxblipcoke then
-        local blip = AddBlipForCoord(fDrugs.coke.traitement.position.x, fDrugs.coke.traitement.position.y, fDrugs.coke.traitement.position.z)
+        local blip = AddBlipForCoord(fDrugs.coke.traitement.x, fDrugs.coke.traitement.y, fDrugs.coke.traitement.z)
         SetBlipSprite(blip, 501)
 		SetBlipScale (blip, 0.6)
 		SetBlipColour(blip, 0)
@@ -83,10 +83,10 @@ CreateThread(function()
     local interval, zoneDistance
     while (true) do
         interval = 1000
-        zoneDistance = #(GetEntityCoords(ESX.PlayerData.Ped) - fDrugs.coke.recolte.position)
+        zoneDistance = #(GetEntityCoords(ESX.PlayerData.Ped) - fDrugs.coke.recolte)
         if (zoneDistance <= 10.0 and fDrugs.jeveuxmarker) then
             interval = 0
-            DrawMarker(20, fDrugs.coke.recolte.position.x, fDrugs.coke.recolte.position.y, fDrugs.coke.recolte.position.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 1, 2, 0, nil, nil, 0)
+            DrawMarker(20, fDrugs.coke.recolte.x, fDrugs.coke.recolte.y, fDrugs.coke.recolte.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 1, 2, 0, nil, nil, 0)
         end
         if (zoneDistance <= 1.5) then
             interval = 0
@@ -106,10 +106,10 @@ CreateThread(function()
     local interval, dist4
     while (true) do
         interval = 1000
-        dist4 = #(GetEntityCoords(ESX.PlayerData.Ped, false) - fDrugs.coke.traitement.position)
+        dist4 = #(GetEntityCoords(ESX.PlayerData.Ped) - fDrugs.coke.traitement)
         if (dist4 <= 10.0 and fDrugs.jeveuxmarker) then
             interval = 0
-            DrawMarker(20, fDrugs.coke.traitement.position.x, fDrugs.coke.traitement.position.y, fDrugs.coke.traitement.position.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 1, 2, 0, nil, nil, 0)
+            DrawMarker(20, fDrugs.coke.traitement.x, fDrugs.coke.traitement.y, fDrugs.coke.traitement.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 0.3, 255, 255, 255, 255, 0, 1, 2, 0, nil, nil, 0)
         end
         if (dist4 <= 1.5) then
             interval = 0
