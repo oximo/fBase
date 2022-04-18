@@ -148,13 +148,13 @@ function recolteCoke()
 end
 
 function traitementcoke()
-    if not traitementpossible then
-        traitementpossible = true
+    if not traitementpossible then traitementpossible = true end
     while traitementpossible do
-        Wait(2000)
-        TriggerServerEvent('tcoke')
-    end
-    else
-        traitementpossible = false
+        coords = #(GetEntityCoords(PlayerPedId()) - fDrugs.coke.traitement)
+        if (coords > 1.5) then return end
+        if (coords < 1.5) then
+            TriggerServerEvent('tcoke')
+        end
+    Wait(2000)
     end
 end
