@@ -95,6 +95,9 @@ CreateThread(function()
                 fCokeRecolte()
             end
         end
+        if (zoneDistance > 2.5) then
+            recoltepossible = false
+        end
         Wait(interval)
     end
 end)
