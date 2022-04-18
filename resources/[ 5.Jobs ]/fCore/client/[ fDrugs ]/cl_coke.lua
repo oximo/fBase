@@ -36,10 +36,10 @@ local function fCokeRecolte()
 
                         RageUI.ButtonWithStyle("Récolter de la coke", nil, {}, true, function(Hovered, Active, Selected)
                             if (Selected) then     
-                                TaskStartScenarioInPlace(playerPed, 'WORLD_HUMAN_GARDENER_PLANT', 0, true)
+                                TaskStartScenarioInPlace(PlayerPedId(), 'WORLD_HUMAN_GARDENER_PLANT', 0, true)
                                 Wait(100)         
                                 recoltecoke()
-                                ClearPedTasksImmediately(playerPed)
+                                ClearPedTasksImmediately(PlayerPedId())
                                 RageUI.CloseAll()
                             end
                         end)
@@ -60,10 +60,10 @@ local function fCokeTraitement()
 
                         RageUI.ButtonWithStyle("Mettre de la coke en sachet", nil, {}, true, function(Hovered, Active, Selected)
                             if (Selected) then
-                                TaskStartScenarioInPlace(playerPed, 'PROP_HUMAN_PARKING_METER', 0, true)
+                                TaskStartScenarioInPlace(PlayerPedId(), 'PROP_HUMAN_PARKING_METER', 0, true)
                                 Wait(100)         
                                 traitementcoke()
-                                ClearPedTasksImmediately(playerPed)
+                                ClearPedTasksImmediately(PlayerPedId())
                                 RageUI.CloseAll()
                             end
                         end)
