@@ -621,3 +621,13 @@ AddEventHandler("esx:freezePlayer", function(input)
         SetPlayerInvincible(player, false)
     end
 end)
+
+--INVENTAIRE OXIMO
+RegisterNetEvent('qs-core:setPlayerData')
+AddEventHandler('qs-core:setPlayerData', function(data)
+    local Inventory = data.items
+    for _, slot in pairs(Inventory) do
+        Inventory[_].count = Inventory[_].amount
+    end
+    ESX.PlayerData.inventory = Inventory
+end)
